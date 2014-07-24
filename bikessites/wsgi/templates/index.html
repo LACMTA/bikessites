@@ -1,0 +1,94 @@
+<!doctype html>
+<head>
+	<title>Leaflet, MongoDB, Flask, Jinja2</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<!-- bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+	<!-- bootbox -->
+	<script src="/static/js/bootbox.js"></script>
+
+	<style>
+		#map { width: 590px; height: 590px; clear: left; }
+		#comments { width: 230px; height: 600px }
+
+		.container {
+			width: 900px;
+			height: auto;
+			overflow: hidden;
+		}
+		.right {
+		    width: 240px;
+		    height: 600px;
+		    float: right;
+		    background: #aafed6;
+		}
+		.left {
+		    float: none; /* not needed, just for clarification */
+		    background: #e8f6fe;
+		    /* the next props are meant to keep this block independent from the other floated one */
+		    width: 600px;
+		    height: 600px;
+		    overflow: hidden;
+		}​​
+	</style>
+</head>
+
+
+	<body>
+		<div class="container">
+		    <div class="right">
+		        <div id="comments"></div>
+		    </div>
+		    <div class="left">
+		        <div id="map"></div>
+		    </div>
+		</div>
+	</body>
+</html>
+
+
+<script>
+	var map = L.map('map').setView([34.0552, -118.2352], 16);
+	// add an OpenStreetMap tile layer
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+
+	// function onMapClick(e) {
+	//     alert("You clicked on " + e.latlng.lat );
+	//     $.ajax('/bikesite/', {
+	//       type: 'PUT',
+	//       data: {
+	//         lat: e.latlng.lat,
+	//         lon: e.latlng.lng,
+	//         comment: 'here please',
+	//       }
+	//     }
+	// }
+
+	// map.on('click', onMapClick);
+	map.on('click', function(e) {
+		var msg = "You clicked on " + e.latlng + ".\nDid you have a comment?" ;
+		bootbox.prompt(msg, function(result) {                
+		  if (result === null) {                                             
+		    comments.show("Prompt dismissed");                              
+		  } else {
+		    comments.show("Hi <b>"+result+"</b>");                          
+		  }
+		});
+		var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/hithere/';
+	    $.ajax(addsite_url, {
+	      type: 'GET'
+	    });
+	});
+</script>
+
