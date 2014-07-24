@@ -65,6 +65,11 @@ api.add_resource(AddSite,
     )
 
 
+@app.route("/sitesurvey")
+def sitesurvey():
+    return render_template('index.html')
+
+
 class BikeSite(Resource):
     def get(self):
         sites = get_sites()
