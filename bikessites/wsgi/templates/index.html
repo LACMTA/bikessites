@@ -52,33 +52,38 @@
 
 	<body>
 		<div class="container">
+			<h1>show us your stuff!</h1>
 		    <div class="left">
 		        <div id="map"></div>
 		    </div>
+
+			<table class="table table-condensed">
+			    <thead>
+			        <tr>
+			            <th>lat</th>
+			            <th>lon</th>
+			            <th>comment</th>
+			        </tr>
+			    </thead>
+			    <tbody>
+					{% for site in sites %}
+				        <tr>
+				            <td>{{ site.lat }}</td>
+				            <td>{{ site.lon }}</td>
+				            <td>{{ site.comment }}</td>
+				        </tr>
+					{% endfor %}		        	
+			    </tbody>
+			</table>					
+
+
+
 		</div>
 
 	    <div class="bb-alert alert alert-info" style="display:none;">
 	        <span>The examples populate this alert with dummy content</span>
 	    </div>
 
-					<table class="table table-condensed">
-					    <thead>
-					        <tr>
-					            <th>lat</th>
-					            <th>lon</th>
-					            <th>comment</th>
-					        </tr>
-					    </thead>
-					    <tbody>
-							{% for site in sites %}
-						        <tr>
-						            <td>{{ site.lat }}</td>
-						            <td>{{ site.lon }}</td>
-						            <td>{{ site.comment }}</td>
-						        </tr>
-							{% endfor %}		        	
-					    </tbody>
-					</table>					
 
 
 	</body>
