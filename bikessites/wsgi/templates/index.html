@@ -17,7 +17,7 @@
 	<script src="/static/js/bootbox.js"></script>
 
 	<style>
-		#map { width: 590px; height: 590px; clear: left; }
+		#map { width: auto; height: 590px; clear: left; }
 		#comments { width: 230px; height: 600px }
 
 		.container {
@@ -25,17 +25,11 @@
 			height: auto;
 			overflow: hidden;
 		}
-		.right {
-		    width: 240px;
-		    height: 600px;
-		    float: right;
-		    background: #aafed6;
-		}
 		.left {
 		    float: none; /* not needed, just for clarification */
 		    background: #e8f6fe;
 		    /* the next props are meant to keep this block independent from the other floated one */
-		    width: 600px;
+		    width: auto;
 		    height: 600px;
 		    overflow: hidden;
 		}​​
@@ -58,9 +52,6 @@
 
 	<body>
 		<div class="container">
-		    <div class="right">
-		        <div id="comments"></div>
-		    </div>
 		    <div class="left">
 		        <div id="map"></div>
 		    </div>
@@ -69,6 +60,25 @@
 	    <div class="bb-alert alert alert-info" style="display:none;">
 	        <span>The examples populate this alert with dummy content</span>
 	    </div>
+
+					<table class="table table-condensed">
+					    <thead>
+					        <tr>
+					            <th>lat</th>
+					            <th>lon</th>
+					            <th>comment</th>
+					        </tr>
+					    </thead>
+					    <tbody>
+							{% for site in sites %}
+						        <tr>
+						            <td>{{ site.lat }}</td>
+						            <td>{{ site.lon }}</td>
+						            <td>{{ site.comment }}</td>
+						        </tr>
+							{% endfor %}		        	
+					    </tbody>
+					</table>					
 
 
 	</body>
@@ -99,16 +109,16 @@
 		var msg = "You clicked on " + e.latlng + ".\rDid you have a comment?" ;
 		bootbox.prompt(msg, function(result) {                
 		  if (result === null) {                                             
-		    Example.show("Prompt dismissed");
-			var comment = 'no comment';
-			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment+'/';
+  			var comment = result;
+		    Example.show("Thanks");
+			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment;
 		    $.ajax(addsite_url, {
 		      type: 'GET'
 		    });
 		  } else {
-		    Example.show("Thanks for your input! <b>"+result+"</b>");
-			var comment = result;
-			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment+'/';
+  			var comment = result;
+		    Example.show("Thanks for your input! <b>"+comment+"</b>");
+			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment;
 		    $.ajax(addsite_url, {
 		      type: 'GET'
 		    });

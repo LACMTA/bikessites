@@ -39,7 +39,7 @@ def get_site(uid='1406159698000'):
 
 class AddSite(Resource):
     """POST is problematic. Let's try a GET"""
-    def get(self,lat=11.111,lon=-111.111,comment='Hey there'):
+    def get(self,lat=11.111,lon=-111.111,comment='No Comment'):
         d = datetime.datetime.now()
         uid = int(time.mktime(d.timetuple())) * 1000
         # add an entry to a csv file
@@ -60,6 +60,7 @@ class AddSite(Resource):
             "comment": comment,
             }
 api.add_resource(AddSite, 
+    '/siteadd/<float:lat>/-<float:lon>/',
     '/siteadd/<float:lat>/-<float:lon>/<string:comment>',
     '/siteadd/<float:lat>/-<float:lon>/<string:comment>/',
     )
@@ -67,7 +68,8 @@ api.add_resource(AddSite,
 
 @app.route("/sitesurvey")
 def sitesurvey():
-    return render_template('index.html')
+    sites = get_sites()
+    return render_template('index.html', sites=sites)
 
 
 class BikeSite(Resource):
