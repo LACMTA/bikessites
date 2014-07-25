@@ -39,6 +39,19 @@
 		    height: 600px;
 		    overflow: hidden;
 		}​​
+		.bb-code-small {
+		    font-size:0.9em;
+		}
+
+		.bb-alert {
+		    position:fixed;
+		    bottom:25%;
+		    right:0;
+		    margin-bottom:0;
+		    font-size:1.2em;
+		    padding:1em 1.3em;
+		    z-index:2000;
+		}
 	</style>
 </head>
 
@@ -52,6 +65,12 @@
 		        <div id="map"></div>
 		    </div>
 		</div>
+
+	    <div class="bb-alert alert alert-info" style="display:none;">
+	        <span>The examples populate this alert with dummy content</span>
+	    </div>
+
+
 	</body>
 </html>
 
@@ -80,15 +99,30 @@
 		var msg = "You clicked on " + e.latlng + ".\rDid you have a comment?" ;
 		bootbox.prompt(msg, function(result) {                
 		  if (result === null) {                                             
-		    comments.show("Prompt dismissed");                              
+		    Example.show("Prompt dismissed");
+			var comment = 'no comment';
+			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment+'/';
+		    $.ajax(addsite_url, {
+		      type: 'GET'
+		    });
 		  } else {
-		    comments.show("Hi <b>"+result+"</b>");                          
+		    Example.show("Thanks for your input! <b>"+result+"</b>");
+			var comment = result;
+			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment+'/';
+		    $.ajax(addsite_url, {
+		      type: 'GET'
+		    });
 		  }
 		});
-		var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/hithere/';
-	    $.ajax(addsite_url, {
-	      type: 'GET'
-	    });
+		
 	});
 </script>
 
+<script src="/static/js/example.js"></script>
+    <script>
+        $(function() {
+            Example.init({
+                "selector": ".bb-alert"
+            });
+        });
+    </script>
