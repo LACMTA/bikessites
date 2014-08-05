@@ -1,9 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <head>
 	<title>park your bike!</title>
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 	<!-- bootstrap -->
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -15,8 +16,9 @@
 
 	<!-- bootbox -->
 	<script src="/static/js/bootbox.js"></script>
-
+	<script src="/static/data/bounds.js"></script>
 	<style>
+	
 		#map { width: auto; height: 590px; clear: left; }
 		#comments { width: 230px; height: 600px }
 
@@ -39,98 +41,455 @@
 
 		.bb-alert {
 		    position:fixed;
-		    bottom:25%;
-		    right:0;
+		    top:0%;
+            width: 100%;
+		    left:0;
 		    margin-bottom:0;
 		    font-size:1.2em;
 		    padding:1em 1.3em;
 		    z-index:2000;
 		}
+		
+		.bool {
+    font-style: italic;
+    color: #313131;
+}
+
+.testingStyles {font-size: 12px;
+   width: 225px;
+   line-height:50px;
+    font-size: 15px;
+   color:#fff;
+   background: #333333;
+   margin: 10px;
+   border: 2px;
+   padding: 10px;
+   position: absolute;
+   z-index:999;}
+       optgroup[label="Metro Local Service"] {
+        background: #000;
+		color:#FFF;
+           font-style:normal;
+    }
+	
+	       optgroup[label="Metro Express Service"] {
+        background: #005DAA;
+               font-style:normal;
+    }
+
+		       optgroup[label="Metro Limited Stop Service"] {
+                   font-style:normal;
+    }
+	
+		       optgroup[label="Metro Rapid Service"] {
+        background: #D11242;
+                   font-style:normal;
+    }
+
+	
+	
+
+	
 	</style>
 </head>
 
 
-	<body>
+	<body onLoad="load()">
 		<div class="container">
-			<h1>show us your stuff!</h1>
-		    <div class="left">
-		        <div id="map"></div>
-		    </div>
+			<h2>Metro Bikeshare – Proposed Sites for Docking Stations </h2>
+            <p>Metro is in the process of developing a regional bikeshare program – and wants to hear from you! 
 
+The program will provide a fleet of bicycles that can be borrowed from strategically placed docking stations. Bicycles can be returned to the same docking station or a separate one, depending on what suits your trip. To help people make easier first and last mile connections, bicycle docking stations must be located near public transit and within accessible distance of other stations. 
+
+This is where you come in – where you think these bikeshare docking station should be located? Which locations would be most convenient and useful for you? The map below shows Metro’s proposed docking station sites with a black bicycle icon – add a comment to tell us if you think a certain location is effective and why. The red pins are suggestions from the public – and also open to your comments. Suggest your own location by clicking an area on the map below. 
+</p>
+
+<span class="info"><strong>WITHIN BOUNDS</strong>: <span id="a" class="bool"></span>
+		    <div class="left">
+		       <div id="map" style="width: 100%; height:500px; border: 1px solid; border-color:#999; background-color: #333;"></div>
+		    </div>
+             <select class="testingStyles" id="route">
+             <option disabled="disabled" selected="selected">Select an Area</option>
+      <option style="background:#ADB8BF" value="downtown">Downtown L.A.</option>
+      <option style="background:#ADB8BF" value="longbeach">Long Beach</option>
+      <option style="background:#ADB8BF" value="pasadena">Pasadena</option>
+      <option style="background:#F15623" value="santamonica">Santa Monica</option>
+      </optgroup>
+
+    </select>
+<a id="entries"></a> 
 			<table class="table table-condensed">
 			    <thead>
 			        <tr>
-			            <th>lat</th>
-			            <th>lon</th>
 			            <th>comment</th>
 			        </tr>
 			    </thead>
 			    <tbody>
 					{% for site in sites %}
 				        <tr>
-				            <td>{{ site.lat }}</td>
-				            <td>{{ site.lon }}</td>
-				            <td>{{ site.comment }}</td>
+				            <td id="fullComments">{{ site.comment }}</td>
 				        </tr>
 					{% endfor %}		        	
 			    </tbody>
 			</table>					
-
-
-
 		</div>
-
 	    <div class="bb-alert alert alert-info" style="display:none;">
 	        <span>The examples populate this alert with dummy content</span>
 	    </div>
-
-
-
 	</body>
 </html>
 
 
 <script>
-	var map = L.map('map').setView([34.0552, -118.2352], 16);
-	// add an OpenStreetMap tile layer
-	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-	}).addTo(map);
 
-	// function onMapClick(e) {
-	//     alert("You clicked on " + e.latlng.lat );
-	//     $.ajax('/bikesite/', {
-	//       type: 'POST',
-	//       data: {
-	//         lat: e.latlng.lat,
-	//         lon: e.latlng.lng,
-	//         comment: 'here please',
-	//       }
-	//     }
-	// }
+var bikeStations = [
+['34.04179626','-118.2350671','5th / Hewitt'],
+['34.04572787','-118.2364874','3rd / Traction'],
+['34.04598345','-118.2325888','3rd / Santa Fe'],
+['34.03576847','-118.2324278','Industrial / Mateo'],
+['34.04929039','-118.2391334','1st / Central'],
+['34.04726802','-118.2565731','7th / Grand'],
+['34.05655609','-118.2531479','2nd / Figueroa'],
+['34.05313943','-118.2477915','2nd / Hill'],
+['34.06268572','-118.2462358','Cesar E Chavez / Figueroa'],
+['34.05025044','-118.2469305','3rd / Spring'],
+['34.04813253','-118.2472122','4th / Main'],
+['34.05100159','-118.2445139','2nd / Main'],
+['34.04737692','-118.2496235','5th / Spring'],
+['34.04528338','-118.2499373','6th / Main'],
+['34.0445344','-118.2522842','7th / Spring'],
+['34.04593011','-118.2544273','7th / Hill'],
+['34.04946373','-118.2563639','6th / Hope'],
+['34.05084158','-118.2641959','7th / Bixel'],
+['34.04164068','-118.2550228','9th / Main'],
+['34.04514781','-118.2568628','8th / Olive'],
+['34.04153844','-118.2619429','11th / Grand'],
+['34.03940475','-118.2622004','12th / Olive'],
+['34.04798696','-118.2612146','8th / Figueroa'],
+['34.04631237','-118.2627368','9th / Figueroa'],
+['34.04190294','-118.2668996','12th / Figueroa'],
+['34.06157027','-118.2584681','1st / Toluca'],
+['34.04325424','-118.2504201','7th / Los Angeles'],
+['34.03722656','-118.2654566','14th / Grand'],
+['34.03543061','-118.2714272','18th / Figueroa'],
+['34.03014481','-118.2730097','23rd / Flower'],
+['34.03917804','-118.232798','Willow / Mateo'],
+['34.03453707','-118.2300889','7th / Santa Fe'],
+['34.02711722','-118.2767165','27th / Figueroa'],
+['34.02266233','-118.2838297','34th / Trousdale'],
+['34.02035031','-118.2851601','36th / Trousdale']
+]
 
-	// map.on('click', onMapClick);
-	map.on('click', function(e) {
-		var msg = "You clicked on " + e.latlng + ".\rDid you have a comment?" ;
+var noteA = jQuery('.bool#a');  
+var centerstart = new google.maps.LatLng(34.056946, -118.244081);
+var markersArray = [];	
+var userMarker = -1;
+var stationinfoWindow = new google.maps.InfoWindow();
+
+//Initial Map Setup
+var map = new google.maps.Map(document.getElementById('map'), {
+		  center: centerstart,
+          zoom: 10,
+		  minZoom: 5,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+		  streetViewControl: false,
+		  mapTypeControl: false,
+		  zoomControlOptions: {
+			  style: google.maps.ZoomControlStyle.LARGE
+			  }
+		});
+
+var circle = new google.maps.Circle({
+            map: map,
+            clickable: false,
+            // metres
+            radius: 90,
+            fillColor: '#fff',
+            fillOpacity: .6,
+            strokeColor: '#313131',
+            strokeOpacity: .4,
+            strokeWeight: .8
+ 
+  }), downtownPOLY = new google.maps.Polygon({
+    paths: downtown,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }), pasadenaPOLY = new google.maps.Polygon({
+    paths: pasadena,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }),  santamonicaPOLY = new google.maps.Polygon({
+    paths: santamonica,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }), longbeachPOLY = new google.maps.Polygon({
+    paths: longbeach,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }), longbeachextPOLY = new google.maps.Polygon({
+    paths: longbeachext,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  });
+
+
+//Location Values
+var myLatLng = new google.maps.LatLng(33.963572, -118.457177);
+var downtownLatLng = new google.maps.LatLng(34.042145, -118.247164);
+var santamonicaLatLng = new google.maps.LatLng(34.027127, -118.479434);
+var pasadenaLatLng = new google.maps.LatLng(34.157202, -118.133697);
+var longbeachLatLng = new google.maps.LatLng(33.774312, -118.193188);
+
+
+//Location Select
+var selectmenu=document.getElementById('route')
+selectmenu.onchange=function(){
+if (this.value == ''){
+	}
+	else{ 
+	if (this.value == 'downtown'){
+	map.panTo(downtownLatLng);
+	map.setZoom(13);
+	}
+	else if (this.value == 'longbeach'){
+	map.panTo(longbeachLatLng);
+	map.setZoom(13);
+	}
+	else if (this.value == 'pasadena'){
+	map.panTo(pasadenaLatLng);
+	map.setZoom(13);
+	}
+	else if (this.value == 'santamonica'){
+	map.panTo(santamonicaLatLng);
+	map.setZoom(13);
+	}
+}}
+
+//Initial Setup
+function load() {
+	
+//Place Location Selector within Google Maps DIV	
+var homeControlDiv = document.createElement('DIV');
+homeControlDiv = document.getElementById('route');
+homeControlDiv.index = 1;
+map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+
+//Setup Bike Layer	
+var bikeLayer = new google.maps.BicyclingLayer();
+bikeLayer.setMap(map);
+
+//Set Boundary Locations
+downtownPOLY.setMap(map);
+pasadenaPOLY.setMap(map);
+santamonicaPOLY.setMap(map);
+longbeachPOLY.setMap(map);
+longbeachextPOLY.setMap(map);
+
+setMarkers();
+setBikeStations(map, bikeStations);	
+	}
+	
+
+setMarkers = function(){
+  var image = new google.maps.MarkerImage('http://registry.bedbugs.net/images/blue-dot.png',
+  new google.maps.Size(16, 16),
+  new google.maps.Point(0,0),
+ new google.maps.Point(8, 8));
+//Grab JSON data	
+$.getJSON('http://127.0.0.1:5000/bikesite/', function(data) {
+	var count = data.length;
+	var commentNumber = 0;
+//Set Markers
+$.each(data, function() {
+	var mlat = this.lat;
+	var mlon = "-" + this.lon;
+	var myLatLng = new google.maps.LatLng(mlat, mlon);
+	var marker = new google.maps.Marker({
+	position: myLatLng,
+	clickable: true,
+	zIndex:888,
+	 icon: image,
+	map: map,
+	mComment: this.comment
+	});
+	
+google.maps.event.addListener(marker, 'click', function() {
+	 var rComment = this.mComment;
+	 stationinfoWindow.setContent(rComment);
+	 stationinfoWindow.open(map,marker);
+	 marker2.setVisible(false);
+	 circle.setVisible(false);
+  });
+    });	
+});
+
+
+};
+
+function setBikeStations(map, bikeStations) {
+  var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/cycling.png',
+  new google.maps.Size(32, 37),
+  new google.maps.Point(0,0),
+ new google.maps.Point(16, 37));
+/* var shadow = new google.maps.MarkerImage('marker-panel.png',
+new google.maps.Size(37, 32),
+new google.maps.Point(0,0),
+new google.maps.Point(0, 32));*/
+for (var i = 0; i < bikeStations.length; i++) {
+
+     var bikeStationsID = bikeStations[i];
+	 var bLatLng = new google.maps.LatLng(bikeStationsID[0], bikeStationsID[1]);
+     var bmarker = new google.maps.Marker({
+          position: bLatLng,
+          map: map,
+		  //shadow: shadow,
+		  icon: image,
+		  zIndex:999,
+          stationID: bikeStationsID[2],
+		  stationLAT: bikeStationsID[0],
+		  stationLON: bikeStationsID[1],
+          });
+
+
+google.maps.event.addListener(bmarker, 'click', function() { 
+	var dataID = this.stationID;
+	var dataLAT = this.stationLAT;
+	var dataLON = this.stationLON;
+	var dataLatLng = new google.maps.LatLng(dataLAT, dataLON);
+	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + dataID + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Note: </b>This location was chosen by Metro. Location will be situated at the intersection of 7th/Flower by the Macy’s Plaza.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>25 people have liked this location.</b></font></td><td style='padding:5px;' align='right'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /><img src='http://metro.net/interactives/thelab/community/comment.png' /></td></tr></table>");
+	map.panTo(dataLatLng);
+	stationinfoWindow.open(map,this);
+ });
+		}
+}  
+
+
+withinBounds = function(event) {
+	var locationCheck = google.maps.geometry.poly.containsLocation(event.latLng, downtownPOLY);
+	var locationCheck2 = google.maps.geometry.poly.containsLocation(event.latLng, santamonicaPOLY);
+	var locationCheck3 = google.maps.geometry.poly.containsLocation(event.latLng, pasadenaPOLY);
+	var locationCheck4 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachPOLY);
+	var locationCheck5 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachextPOLY);
+	
+	circle.bindTo('center', marker2, 'position');
+	var bounds = circle.getBounds();
+	//noteA.text(bounds.contains(myLatLng));	
+	
+	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5){
+		noteA.text("TRUE");
+		if (locationCheck){
+		//alert("DOWNTOWN");	
+		}
+		stationinfoWindow.setContent("<center><button onclick='addComment();'>Add a comment at this location.</button><br> You can drag me around too!</center>");
+		}
+		else{
+			noteA.text("FALSE");
+		stationinfoWindow.setContent("Please select an area within the boundaries.");
+		}
+	stationinfoWindow.open(map,marker2);
+	circle.setVisible(true);
+}
+
+
+//On Map Click
+google.maps.event.addListener(map, "click", function(event) {
+	
+		 //Reset Captured Coordinates
+		 markerLAT = event.latLng.lat();
+		 markerLON = event.latLng.lng();
+		 var stationSelect = new google.maps.LatLng(markerLAT, markerLON); 
+		 //Center Map to Selected Location
+		 map.panTo(stationSelect);	
+
+	//If Marker Exists
+	if ( userMarker > 0 ) {
+		marker2.setVisible(true);
+		marker2.setPosition(stationSelect);
+	}
+	//If Marker Does not Exist
+	else {
+		userMarker = 1;
+		marker2 = new google.maps.Marker({
+			map: map,
+			clickable: false,
+			draggable: true,
+			position: stationSelect
+			});
+	}
+			
+withinBounds(event);
+
+google.maps.event.addListener(marker2,'dragend',function(event) {
+	stationinfoWindow.open(map,this);
+	markerLAT = event.latLng.lat();
+	markerLON = event.latLng.lng();
+	withinBounds(event);
+    });
+	
+google.maps.event.addListener(marker2,'dragstart',function(event) {
+	stationinfoWindow.close(map,this);
+    });
+	
+google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
+	circle.setVisible(false);
+	marker2.setVisible(false);
+	userMarker = -1;
+	});
+	
+	
+	addComment = function(){
+	var msg = "Enter Your Comment Below." ;
 		bootbox.prompt(msg, function(result) {                
-		  if (result === null) {                                             
-  			var comment = result;
-		    Example.show("Thanks");
-			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment;
-		    $.ajax(addsite_url, {
-		      type: 'GET'
-		    });
+		  if (result === null) {                    
 		  } else {
   			var comment = result;
 		    Example.show("Thanks for your input! <b>"+comment+"</b>");
-			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+e.latlng.lat+'/'+e.latlng.lng+'/'+comment;
+			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
 		    $.ajax(addsite_url, {
-		      type: 'GET'
+		      type: 'GET',
+			  success:function(){
+             //map.removeLayer(newMarker)
+            }
 		    });
 		  }
-		});
+		});	
+	}
 		
 	});
+
+	
+
+
 </script>
 
 <script src="/static/js/example.js"></script>

@@ -1,0 +1,35 @@
+-118.235067129;34.041796257;0;5th / Hewitt;Additional Downtown Kiosks/5th;0;-1;0;;Barker Block / Urth Caffe;-1;0
+-118.236487359;34.0457278700001;0;3rd / Traction;Additional Downtown Kiosks/3rd;0;-1;0;;Arts District;-1;0
+-118.232588768;34.045983452;0;3rd / Santa Fe;Additional Downtown Kiosks/3rd;0;-1;0;;SciArc / One Santa Fe;-1;0
+-118.232427835;34.035768467;0;Industrial / Mateo;Additional Downtown Kiosks/Industrial;0;-1;0;;;-1;0
+-118.239133358;34.0492903890001;0;1st / Central;Additional Downtown Kiosks/1st;0;-1;0;;Japanese American National Museum;-1;0
+-118.256573081;34.0472680170001;0;7th / Grand;Additional Downtown Kiosks/7th;0;-1;0;;;-1;0
+-118.2531479;34.056556087;0;2nd / Figueroa;Additional Downtown Kiosks/2nd;0;-1;0;;;-1;0
+-118.247791529;34.053139431;0;2nd / Hill;Additional Downtown Kiosks/2nd;0;-1;0;;U.S. Courthouse;-1;0
+-118.246235847;34.062685722;0;Cesar E Chavez / Figueroa;Additional Downtown Kiosks/Cesar E Chavez;0;-1;0;;;-1;0
+-118.24693054;34.050250444;0;3rd / Spring;Additional Downtown Kiosks/3rd;0;-1;0;;State Building;-1;0
+-118.247212172;34.0481325310001;0;4th / Main;Additional Downtown Kiosks/4th;0;-1;0;;;-1;0
+-118.244513869;34.0510015900001;0;2nd / Main;Additional Downtown Kiosks/2nd;0;-1;0;;;-1;0
+-118.249623477;34.047376915;0;5th / Spring;Additional Downtown Kiosks/5th;0;-1;0;;;-1;0
+-118.249937296;34.0452833780001;0;6th / Main;Additional Downtown Kiosks/6th;0;-1;0;;;-1;0
+-118.252284229;34.0445344030001;0;7th / Spring;Additional Downtown Kiosks/7th;0;-1;0;;;-1;0
+-118.254427314;34.0459301130001;0;7th / Hill;Additional Downtown Kiosks/7th;0;-1;0;;;-1;0
+-118.256363869;34.049463733;0;6th / Hope;Additional Downtown Kiosks/6th;0;-1;0;;Central Library;-1;0
+-118.264195919;34.0508415830001;0;7th / Bixel;Additional Downtown Kiosks/7th;0;-1;0;;;-1;0
+-118.255022764;34.0416406780001;0;9th / Main;Additional Downtown Kiosks/9th;0;-1;0;;;-1;0
+-118.25686276;34.045147807;0;8th / Olive;Additional Downtown Kiosks/8th;0;-1;0;;;-1;0
+-118.261942863;34.0415384400001;0;11th / Grand;Additional Downtown Kiosks/11th;0;-1;0;;;-1;0
+-118.262200356;34.0394047520001;0;12th / Olive;Additional Downtown Kiosks/12th;0;-1;0;;AT&T Center;-1;0
+-118.261214644;34.0479869640001;0;8th / Figueroa;Additional Downtown Kiosks/8th;0;-1;0;;7&Fig;-1;0
+-118.262736797;34.046312373;0;9th / Figueroa;Additional Downtown Kiosks/9th;0;-1;0;;;-1;0
+-118.266899586;34.0419029400001;0;12th / Figueroa;Additional Downtown Kiosks/12th;0;-1;0;;Staples Center;-1;0
+-118.258468062;34.061570266;0;1st / Toluca;Additional Downtown Kiosks/1st;0;-1;0;;Vista Hermosa Natural Park;-1;0
+-118.250420094;34.043254242;0;7th / Los Angeles;Additional Downtown Kiosks/7th;0;-1;0;;Santee Court/Village;-1;0
+-118.265456557;34.0372265560001;0;14th / Grand;Additional Downtown Kiosks/14th;0;-1;0;;California Hospital Medical Center;-1;0
+-118.271427155;34.0354306140001;0;18th / Figueroa;Additional Downtown Kiosks/18th;0;-1;0;;Bob Hope Patriotic Hall;-1;0
+-118.273009658;34.0301448110001;0;23rd / Flower;Additional Downtown Kiosks/23rd;0;-1;0;;23rd St. Station
+-118.23279798;34.039178044;0;Willow / Mateo;Additional Downtown Kiosks/Willow;0;-1;0;;;-1;0
+-118.230088949;34.0345370740001;0;7th / Santa Fe;Additional Downtown Kiosks/7th;0;-1;0;;;-1;0
+-118.276716471;34.0271172180001;0;27th / Figueroa;Additional Downtown Kiosks/27th;0;-1;0;;;-1;0
+-118.283829689;34.022662326;0;34th / Trousdale;Additional Downtown Kiosks/34th;0;-1;0;;USC;-1;0
+-118.285160065;34.0203503130001;0;36th / Trousdale;Additional Downtown Kiosks/36th;0;-1;0;;;-1;0
