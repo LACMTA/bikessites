@@ -1,4 +1,5 @@
 from os import rename
+import shutil
 from bikessites import app, auth
 from bikessites.models import Comment
 
@@ -7,9 +8,9 @@ def flushDB():
 
     # let's get rid of the old data.db file
     dbfile = app.config['DBFILE']
-    delme='/tmp/%s' %(dbfile)
+    delme='%s_' %(dbfile)
     try:
-        rename(dbfile,delme)
+        shutil.move(dbfile,delme)
     except:
         # no data.db file here!
         pass
@@ -23,8 +24,8 @@ def flushDB():
     # add the default bikestations
     Comment.create_table(fail_silently=True)
     for bs in bikeStations:
-        # {'lat': '34.12927', 'comment': 'Pilot', 'lon': '-118.14949'}
-        Comment.create(lat=bs['lat'],lon=bs['lon'],comment=bs['comment'],)
+        # {'lat':'34.0334882847','lon':'-118.480816291','comment':'Santa Monica','approved':True},
+        Comment.create(lat=bs['lat'],lon=bs['lon'],comment=bs['comment'],approved=bs['approved'],)
 
 
 if __name__ == "__main__":
