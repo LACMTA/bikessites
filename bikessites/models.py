@@ -28,8 +28,17 @@ admin.register(Comment) # register "Comment" with vanilla ModelAdmin
 # after all models and panels are registered, configure the urls
 admin.setup()
 
+
+# Exclude the uid from the resource listing
+class CommentResource(RestResource):
+    exclude = ('uid')
+
 # register our models so they are exposed via /api/<model>/
-api.register(Comment, auth=api_auth, allowed_methods=['GET', 'POST'])
+# api.register(Comment, auth=api_auth, allowed_methods=['GET', 'POST'])
+api.register(Comment, CommentResource, auth=api_auth, allowed_methods=['GET', 'POST', 'PUT'])
+
+
+
 
 # configure the urls
 api.setup()
