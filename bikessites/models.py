@@ -18,7 +18,10 @@ class Comment(db.Model):
     likes = IntegerField(default=0)
 
     def __unicode__(self):
-        return '(%s,%s) %s' % (self.lat, self.lon, self.comment)
+        return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
+
+    # def __repr__(self):
+    #     return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
 
 admin.register(Comment) # register "Comment" with vanilla ModelAdmin
 
