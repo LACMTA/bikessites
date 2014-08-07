@@ -16,10 +16,8 @@ def flushDB():
         pass
     
     # set up the admin user
-    auth.User.create_table(fail_silently=True)  # make sure table created.
-    admin = auth.User(username='admin', email='', admin=True, active=True)
-    admin.set_password('admin')
-    admin.save()
+    auth.User.create_table(fail_silently=True)
+    auth.User.create(username='admin', email='', password='admin', admin=True, active=True)
 
     # add the default bikestations
     Comment.create_table(fail_silently=True)
