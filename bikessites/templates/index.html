@@ -326,7 +326,7 @@ setMarkers = function(){
   new google.maps.Point(0,0),
  new google.maps.Point(8, 8));
 //Grab JSON data	
-$.getJSON('http://127.0.0.1:5000/bikesite/', function(data) {
+$.getJSON('http://127.0.0.1:5000/api/comment/', function(data) {
 	var count = data.length;
 	var commentNumber = 0;
 //Set Markers
@@ -466,7 +466,7 @@ google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
 	userMarker = -1;
 	});
 	
-	
+
 	addComment = function(){
 	var msg = "Enter Your Comment Below." ;
 		bootbox.prompt(msg, function(result) {                
@@ -474,10 +474,14 @@ google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
 		  } else {
   			var comment = result;
 		    Example.show("Thanks for your input! <b>"+comment+"</b>");
-			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
+			// var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
+			var addsite_url = 'http://127.0.0.1:5000/api/comment/'
 		    $.ajax(addsite_url, {
-		      type: 'GET',
+		      // type: 'GET',
+			  type: 'POST',
+			  data: { lat: markerLAT, lon: markerLON, comment: comment },
 			  success:function(){
+				  console.log("Hooray, it worked!");
              //map.removeLayer(newMarker)
             }
 		    });
