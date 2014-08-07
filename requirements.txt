@@ -8,7 +8,7 @@ SQLAlchemy==0.9.7
 WTForms==2.0.1
 Werkzeug==0.9.6
 aniso8601==0.82
--e git+https://github.com/LACMTA/flask-peewee.git@848a2dd5b747e1d64ec28bde8dd27b0c9ededafc#egg=flask_peewee-master
+-e git+https://github.com/LACMTA/flask-peewee.git@910cd7120817c3599b5261e72bf2f180009c0c47#egg=flask_peewee-master
 itsdangerous==0.24
 latimes-statestyle==0.1.2
 peewee==2.2.5
