@@ -1,7 +1,6 @@
 Flask==0.10.1
 Flask-Bootstrap==3.2.0.2
 Flask-Cors==1.5.0
-Flask-RESTful==0.2.12
 Flask-SQLAlchemy==1.0
 Jinja2==2.7.3
 MarkupSafe==0.23
@@ -9,12 +8,10 @@ SQLAlchemy==0.9.7
 WTForms==2.0.1
 Werkzeug==0.9.6
 aniso8601==0.82
-flask-peewee==0.6.5
+-e git+https://github.com/LACMTA/flask-peewee.git@848a2dd5b747e1d64ec28bde8dd27b0c9ededafc#egg=flask_peewee-master
 itsdangerous==0.24
 latimes-statestyle==0.1.2
 peewee==2.2.5
-pymongo==2.7.1
-python-tablefu==0.4.2
 pytz==2014.4
 simplejson==3.6.0
 six==1.7.3
