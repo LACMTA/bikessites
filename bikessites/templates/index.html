@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <head>
 	<title>park your bike!</title>
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -20,6 +20,7 @@
 	<!-- bootbox -->
 	<script src="/static/js/bootbox.js"></script>
 	<script src="/static/data/bounds.js"></script>
+    <script src="/static/data/setlocations.js"></script>
 	<style>
 	
 		#map { width: auto; height: 590px; clear: left; }
@@ -266,7 +267,8 @@ if (this.value == ''){
 
 //Initial Setup
 function load() {
-	
+//reset dropdown Options
+document.getElementById('route').selectedIndex = 0;
 //Place Location Selector within Google Maps DIV	
 var homeControlDiv = document.createElement('DIV');
 homeControlDiv = document.getElementById('route');
@@ -314,7 +316,7 @@ $.each(data, function() {
 	
 google.maps.event.addListener(marker, 'click', function() {
 	 var rComment = this.mComment;
-	 stationinfoWindow.setContent(rComment);
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>25 people have liked this location.</b></font></td><td style='padding:5px;' align='right'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /><img src='http://metro.net/interactives/thelab/community/reply.png' /></td></tr></table>");
 	 stationinfoWindow.open(map,marker);
 	 marker2.setVisible(false);
 	 circle.setVisible(false);
@@ -358,6 +360,8 @@ google.maps.event.addListener(bmarker, 'click', function() {
 	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + dataID + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Note: </b>This location was chosen by Metro. Location will be situated at the intersection of 7th/Flower by the Macy’s Plaza.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>25 people have liked this location.</b></font></td><td style='padding:5px;' align='right'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /><img src='http://metro.net/interactives/thelab/community/comment.png' /></td></tr></table>");
 	map.panTo(dataLatLng);
 	stationinfoWindow.open(map,this);
+		 marker2.setVisible(false);
+	 circle.setVisible(false);
  });
 		}
 }  
