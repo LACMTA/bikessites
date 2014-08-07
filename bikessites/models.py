@@ -13,6 +13,7 @@ class Comment(db.Model):
     lat = FloatField(default=0.0)
     lon = FloatField(default=0.0)
     comment = TextField(default='Hi')
+    reply = TextField(default='')
     pub_date = DateTimeField(default=datetime.datetime.now)
     approved = BooleanField(default=True)
     likes = IntegerField(default=0)
