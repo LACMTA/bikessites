@@ -1,0 +1,236 @@
+<!doctype html>
+<head>
+	<title>park your bike!</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<!-- bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+	<!-- bootbox -->
+	<script src="/static/js/bootbox.js"></script>
+
+	<style>
+	
+		#map { width: auto; height: 590px; clear: left; }
+		#comments { width: 230px; height: 600px }
+
+		.container {
+			width: 900px;
+			height: auto;
+			overflow: hidden;
+		}
+		.left {
+		    float: none; /* not needed, just for clarification */
+		    background: #e8f6fe;
+		    /* the next props are meant to keep this block independent from the other floated one */
+		    width: auto;
+		    height: 600px;
+		    overflow: hidden;
+		}​​
+		.bb-code-small {
+		    font-size:0.9em;
+		}
+
+		.bb-alert {
+		    position:fixed;
+		    top:0%;
+            width: 100%;
+		    left:0;
+		    margin-bottom:0;
+		    font-size:1.2em;
+		    padding:1em 1.3em;
+		    z-index:2000;
+		}
+	
+	</style>
+</head>
+
+
+	<body onLoad="setMarkers()">
+		<div class="container">
+			<h2>Metro Bikeshare – Proposed Sites for Docking Stations </h2>
+            <p>Metro is in the process of developing a regional bikeshare program – and wants to hear from you! 
+
+The program will provide a fleet of bicycles that can be borrowed from strategically placed docking stations. Bicycles can be returned to the same docking station or a separate one, depending on what suits your trip. To help people make easier first and last mile connections, bicycle docking stations must be located near public transit and within accessible distance of other stations. 
+
+This is where you come in – where you think these bikeshare docking station should be located? Which locations would be most convenient and useful for you? The map below shows Metro’s proposed docking station sites with a black bicycle icon – add a comment to tell us if you think a certain location is effective and why. The red pins are suggestions from the public – and also open to your comments. Suggest your own location by clicking an area on the map below. 
+</p>
+		    <div class="left">
+		        <div id="map"></div>
+		    </div>
+<a id="entries"></a> 
+			<table class="table table-condensed">
+			    <thead>
+			        <tr>
+			            <th>comment</th>
+			        </tr>
+			    </thead>
+			    <tbody>
+					{% for site in sites %}
+				        <tr>
+				            <td id="fullComments">{{ site.comment }}</td>
+				        </tr>
+					{% endfor %}		        	
+			    </tbody>
+			</table>					
+
+
+
+		</div>
+
+	    <div class="bb-alert alert alert-info" style="display:none;">
+	        <span>The examples populate this alert with dummy content</span>
+	    </div>
+
+
+
+	</body>
+</html>
+
+
+<script>
+var markersArray = [];	
+var userMarker = -1;
+var UserSelectedIcon = L.icon({
+    iconUrl: 'http://www.hersamacorn.com/wp-content/uploads/leaflet-maps-marker-icons/bicycle_shop.png',
+
+    iconSize:     [32, 37], // size of the icon
+    iconAnchor:   [16, 37], // point of the icon which will correspond to marker's location
+    popupAnchor:  [0, -37] // point from which the popup should open relative to the iconAnchor
+});
+
+
+
+setMarkers = function(){
+
+
+ showComments = function(number){
+	 var arr = markersArray[0];
+alert( arr[number].comment);
+	//document.getElementById("fullComments").innerHTML = mcomment;
+	
+}
+	
+	$.getJSON('http://127.0.0.1:5000/bikesite/', function(data) {
+			var count = data.length;
+			var commentNumber = 0;
+			
+$.each(data, function() {
+	var mlat = this.lat;
+	var mlon = "-" + this.lon;
+	var mcomment = this.comment;
+	var marker = L.marker([mlat, mlon], 
+	{riseOnHover: true,
+	icon: UserSelectedIcon}).addTo(map);
+	marker.bindPopup(commentNumber + "<b>Uknown User</b>: " + mcomment + "<br><button onclick='showComments(" + commentNumber + ")'>Reply on this location</button><br><button onclick='showComments()'>(3) Like this location</button>");
+ commentNumber++;
+marker.on('click', function () {
+map.panTo(this.getLatLng());
+map.removeLayer(newMarker);
+userMarker = -1;
+});
+
+
+markersArray.push(data);
+
+    });
+	
+});
+
+
+
+};
+
+    var map = new L.Map('map', {
+      center: new L.LatLng(34.0552, -118.2352),
+      zoom: 13
+    });
+
+	// add an OpenStreetMap tile layer
+	L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+		maxZoom: 18
+	}).addTo(map);
+	
+	
+var newMarker = L.marker();
+	// function onMapClick(e) {
+	//     alert("You clicked on " + e.latlng.lat );
+	//     $.ajax('/bikesite/', {
+	//       type: 'POST',
+	//       data: {
+	//         lat: e.latlng.lat,
+	//         lon: e.latlng.lng,
+	//         comment: 'here please',
+	//       }
+	//     }
+	// }
+
+	// map.on('click', onMapClick);
+	map.on('click', function(e) {
+		
+
+var markerLAT = e.latlng.lat;
+var markerLON = e.latlng.lng;
+
+		
+		map.panTo(e.latlng);
+		
+		if (userMarker > 0){
+		newMarker.setLatLng([markerLAT, markerLON]).update();	
+		newMarker.openPopup();
+	}
+	else{
+		userMarker = 1;
+		newMarker = L.marker([e.latlng.lat, e.latlng.lng], 
+	{riseOnHover: true,
+	draggable: true}).addTo(map);
+	newMarker.bindPopup("<center><button onclick='addComment();'>Add a comment at this location.</button><br> You can drag me around too!</center>");
+	newMarker.openPopup();
+	Example.show("You can drag your marker around to pinpoint your location.");
+	
+			 newMarker.on('dragend', function () {
+this.openPopup();
+markerLAT = this.getLatLng().lat;
+markerLON = this.getLatLng().lng;
+});
+	}
+	
+	addComment = function(){
+	var msg = "Enter Your Comment Below." ;
+		bootbox.prompt(msg, function(result) {                
+		  if (result === null) {                                             
+		  } else {
+  			var comment = result;
+		    Example.show("Thanks for your input! <b>"+comment+"</b>");
+			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
+		    $.ajax(addsite_url, {
+		      type: 'GET',
+			  success:function(){
+             map.removeLayer(newMarker)
+            }
+		    });
+		  }
+		});	
+	}
+	
+		
+		
+	});
+</script>
+
+<script src="/static/js/example.js"></script>
+    <script>
+        $(function() {
+            Example.init({
+                "selector": ".bb-alert"
+            });
+        });
+    </script>
