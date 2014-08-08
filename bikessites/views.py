@@ -10,7 +10,7 @@ from bikessites.models import Comment
 def get_sites():
     sites = Comment.select().where(Comment.approved == True)
     bikeStations = app.config['BIKESTATIONS']
-    return sites, jsonify(bikeStations)
+    return sites, json.dumps(bikeStations)
 
 @app.route("/")
 def index():
