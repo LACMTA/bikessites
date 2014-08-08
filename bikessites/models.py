@@ -2,7 +2,7 @@ import datetime, time
 
 from flask_peewee.auth import BaseUser
 from flask_peewee.rest import RestResource, UserAuthentication
-from peewee import FloatField,DateTimeField,TextField,BooleanField,IntegerField
+from peewee import FloatField,DateTimeField,TextField,BooleanField,IntegerField,CharField
 
 from bikessites import db, admin, api, api_auth
 
@@ -13,14 +13,14 @@ class Comment(db.Model):
     lat = FloatField(default=0.0)
     lon = FloatField(default=0.0)
     comment = TextField(default='Hi')
-    name = TextField(default='anonymous')
-    email = TextField(default='anonymous@gmail.com')
-    zipcode = TextField(default='90000')
+    name = CharField(default='anonymous',max_length=50)
+    email = CharField(default='anonymous@gmail.com',max_length=255)
+    zipcode = CharField(default='90000',max_length=10)
     reply = TextField(default='')
     pub_date = DateTimeField(default=datetime.datetime.now)
     approved = BooleanField(default=True)
     likes = IntegerField(default=0)
-    category=TextField(default='userSelected')
+    category=CharField(default='userSelected',max_length=16)
 
     def __unicode__(self):
         return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
