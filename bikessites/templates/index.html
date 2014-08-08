@@ -262,7 +262,7 @@ if (this.value == ''){
 
 
 addLike = function(rID, rLikes){
-	  var addlike_url = "http://127.0.0.1:5000/api/comment/" + rID + "/";
+	  var addlike_url = "/api/comment/" + rID + "/";
 	  var newlikes = rLikes + 1;
 		  $.ajax(addlike_url, {
 	 type: 'POST',
@@ -315,7 +315,7 @@ setMarkers = function(){
   new google.maps.Point(0,0),
   new google.maps.Point(8, 8));
 //Grab JSON data	
-$.getJSON('http://127.0.0.1:5000/api/comment/', function(data) {
+$.getJSON('/api/comment/', function(data) {
 	//var count = data.length;
 	var commentNumber = 0;
 	//Grab data in Objects
@@ -481,8 +481,8 @@ addComment = function(){
 		  } else {
   			var comment = result;
 		    Example.show("Thanks for your input! <b>"+comment+"</b>");
-			// var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
-			var addsite_url = 'http://127.0.0.1:5000/api/comment/'
+			// var addsite_url = '/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
+			var addsite_url = '/api/comment/'
 		    $.ajax(addsite_url, {
 		      // type: 'GET',
 			  type: 'POST',

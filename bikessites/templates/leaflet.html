@@ -118,7 +118,7 @@ alert( arr[number].comment);
 	
 }
 	
-	$.getJSON('http://127.0.0.1:5000/bikesite/', function(data) {
+	$.getJSON('/bikesite/', function(data) {
 			var count = data.length;
 			var commentNumber = 0;
 			
@@ -210,7 +210,7 @@ markerLON = this.getLatLng().lng;
 		  } else {
   			var comment = result;
 		    Example.show("Thanks for your input! <b>"+comment+"</b>");
-			var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
+			var addsite_url = '/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
 		    $.ajax(addsite_url, {
 		      type: 'GET',
 			  success:function(){
