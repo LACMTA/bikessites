@@ -23,7 +23,16 @@ def flushDB():
     Comment.create_table(fail_silently=True)
     for bs in bikeStations:
         # {'lat':'34.0334882847','lon':'-118.480816291','comment':'Santa Monica','approved':True},
-        Comment.create(lat=bs['lat'],lon=bs['lon'],comment=bs['comment'],approved=bs['approved'],)
+        Comment.create(
+            lat=bs['lat'],
+            lon=bs['lon'],
+            comment=bs['comment'],
+            approved=bs['approved'],
+            name=bs['name'],
+            email=bs['email'],
+            zipcode=bs['zipcode'],
+            category='metroSelected',
+            )
 
 
 if __name__ == "__main__":
