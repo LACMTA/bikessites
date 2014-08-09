@@ -1081,3 +1081,16 @@ new google.maps.LatLng(34.0501619991, -118.494641),
 new google.maps.LatLng(34.0505599991, -118.494468),
 new google.maps.LatLng(34.0416349991, -118.483981)
    ];
+   
+var university = [
+new google.maps.LatLng(34.0184159991, -118.282819),
+new google.maps.LatLng(34.0184159991, -118.291502),
+new google.maps.LatLng(34.0368119991, -118.291508),
+new google.maps.LatLng(34.0369119991, -118.284008),
+new google.maps.LatLng(34.0378119991, -118.279307),
+new google.maps.LatLng(34.0354119991, -118.274107),
+new google.maps.LatLng(34.0281119991, -118.274307),
+new google.maps.LatLng(34.0265119991, -118.274607),
+new google.maps.LatLng(34.0184679991, -118.279743),
+new google.maps.LatLng(34.0184159991, -118.282819)
+];

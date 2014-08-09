@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <head>
 	<title>park your bike!</title>
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -20,6 +20,7 @@
     <script src="/static/data/setlocations.js"></script>
 	<style>
 	
+	
 		#map { width: auto; height: 590px; clear: left; }
 		#comments { width: 230px; height: 600px }
 
@@ -33,7 +34,6 @@
 		    background: #e8f6fe;
 		    /* the next props are meant to keep this block independent from the other floated one */
 		    width: auto;
-		    height: 600px;
 		    overflow: hidden;
 		}​​
 		.bb-code-small {
@@ -97,7 +97,7 @@
 
 	<body onLoad="load()">
 		<div class="container">
-			<h2>Metro Bikeshare – Proposed Sites for Docking Stations </h2>
+			<h2>Help Build Bikeshare!</h2>
             <p>Metro is in the process of developing a regional bikeshare program – and wants to hear from you! 
 
 The program will provide a fleet of bicycles that can be borrowed from strategically placed docking stations. Bicycles can be returned to the same docking station or a separate one, depending on what suits your trip. To help people make easier first and last mile connections, bicycle docking stations must be located near public transit and within accessible distance of other stations. 
@@ -122,15 +122,17 @@ This is where you come in – where you think these bikeshare docking station sh
 			<table class="table table-condensed">
 			    <thead>
 			        <tr>
-			            <th>comment</th>
+			            <th>Comments</th>
 			        </tr>
 			    </thead>
 			    <tbody>
-					{% for site in sites %}
+
 				        <tr>
-				            <td id="fullComments">{{ site.comment }}</td>
+                        <td id="replyComments">
+                        </td>
+				           
 				        </tr>
-					{% endfor %}		        	
+		        	
 			    </tbody>
 			</table>					
 		</div>
@@ -143,7 +145,18 @@ This is where you come in – where you think these bikeshare docking station sh
 
 <script>
 
+//grab variable from URL (Called out by EV Station Page)
+var initLAT = getUrlVars()["lat"];
+var initLON = getUrlVars()["lon"];
 
+//Getting URL Variable
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+    vars[key] = value;
+    });
+    return vars;
+}
 
 var noteA = jQuery('.bool#a');  
 var centerstart = new google.maps.LatLng(34.056946, -118.244081);
@@ -215,7 +228,17 @@ var circle = new google.maps.Circle({
 	fillOpacity: 0.3,
 	zIndex: 50 
 
-  }), longbeachextPOLY = new google.maps.Polygon({
+  }),universityPOLY = new google.maps.Polygon({
+    paths: university,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }),longbeachextPOLY = new google.maps.Polygon({
     paths: longbeachext,
 	clickable: false,
 	strokeColor: '#000',
@@ -271,12 +294,55 @@ addLike = function(rID, rLikes){
 	 success:function(){
 		 console.log("Like count updated!");
 	stationinfoWindow.close(map,this);
+					  Example.show("You Liked This Location!");
 	     },
 		 error:function(jqXhr, statusText, error){
 			  console.log(statusText, error);}
 	});
 
 };
+
+
+viewReply = function(rID){
+
+$.getJSON("/api/comment/" + rID + "/", function(data) {
+	var AllReplies = data.reply.toString();
+document.getElementById("replyComments").innerHTML = AllReplies;
+
+
+addReply = function(rID){
+	var msg = "Enter Your Reply Below:" ;
+		bootbox.prompt(msg, function(result) {                
+		  if (result === null) {   
+		  } else {
+  			var reply = AllReplies + "<p>" + result + "</p>";
+
+var addreply_url = "/api/comment/" + rID + "/";
+		    $.ajax(addreply_url, {
+		      // type: 'GET',
+			  type: 'POST',
+			  data: { reply: reply },
+			  success:function(){
+				  console.log("Hooray, it worked!");
+				  Example.show("Your Comment Has Been Added!");
+            },
+			error:function(jqXhr, statusText, error){
+			  console.log(statusText, error);
+			}
+		    });
+		  }
+		});
+
+};
+
+
+
+
+});
+
+};
+
+
 
 
 //Initial Setup
@@ -289,6 +355,14 @@ homeControlDiv = document.getElementById('route');
 homeControlDiv.index = 1;
 map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
 
+
+
+if (initLAT != null && initLON !=null){
+	var newCenter = new google.maps.LatLng(initLAT, initLON);
+	map.panTo(newCenter);
+	map.setZoom(16);
+}
+
 //Setup Bike Layer	
 var bikeLayer = new google.maps.BicyclingLayer();
 bikeLayer.setMap(map);
@@ -299,9 +373,10 @@ pasadenaPOLY.setMap(map);
 santamonicaPOLY.setMap(map);
 longbeachPOLY.setMap(map);
 longbeachextPOLY.setMap(map);
+universityPOLY.setMap(map);
 
 setMarkers();
-setBikeStations(map, bikeStations);	
+//setBikeStations(map, bikeStations);	
 	}
 	
 
@@ -310,7 +385,7 @@ setMarkers = function(){
 	
 	
 	
-  var image = new google.maps.MarkerImage('http://registry.bedbugs.net/images/blue-dot.png',
+  
   new google.maps.Size(16, 16),
   new google.maps.Point(0,0),
   new google.maps.Point(8, 8));
@@ -327,7 +402,20 @@ $.each(userMarkers, function() {
 	
 //Check to see if comment is approved
 	var mapproved = this.approved;
+	var mcategory = this.category;
 	if (mapproved == 1){
+		if (mcategory == 'metroSelected'){
+  var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/cycling.png',
+  new google.maps.Size(32, 37),
+  new google.maps.Point(0,0),
+ new google.maps.Point(16, 37));
+		}
+		else {
+			var image = new google.maps.MarkerImage('http://registry.bedbugs.net/images/blue-dot.png',
+  new google.maps.Size(16, 16),
+  new google.maps.Point(0,0),
+  new google.maps.Point(8, 8));
+		}
 	var mlat = this.lat;
 	var mlon = this.lon;
 	var myLatLng = new google.maps.LatLng(mlat, mlon);
@@ -346,7 +434,8 @@ google.maps.event.addListener(marker, 'click', function() {
 	 var rComment = this.mComment;
 	 var rLikes = this.mLikes;
 	 var rID = this.mID;
-	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><img src='http://metro.net/interactives/thelab/community/reply.png' /></td></tr></table>");
+	 viewReply(this.mID);
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");
 	 stationinfoWindow.open(map,marker);
 	 marker2.setVisible(false);
 	 circle.setVisible(false);
@@ -403,12 +492,13 @@ withinBounds = function(event) {
 	var locationCheck3 = google.maps.geometry.poly.containsLocation(event.latLng, pasadenaPOLY);
 	var locationCheck4 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachPOLY);
 	var locationCheck5 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachextPOLY);
+	var locationCheck6 = google.maps.geometry.poly.containsLocation(event.latLng, universityPOLY);
 	
 	circle.bindTo('center', marker2, 'position');
 	var bounds = circle.getBounds();
 	//noteA.text(bounds.contains(myLatLng));	
 	
-	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5){
+	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5 || locationCheck6){
 		noteA.text("TRUE");
 		if (locationCheck){
 		//alert("DOWNTOWN");	
@@ -473,22 +563,30 @@ google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
 
 
 addComment = function(){
-	var msg = "Enter Your Comment Below." ;
+	var msg = "<form id='infos' action=''>\
+    Name:<input type='text' name='name' id='name'></input><br/>\
+    Email:<input type='text' name='email' id='email'></input>\
+	Zip Code:<input type='text' id='zipCode'></input>\
+    </form><br>Enter Your Comment Below:" ;
 		bootbox.prompt(msg, function(result) {                
 		  if (result === null) {   
 		
 		               
 		  } else {
   			var comment = result;
-		    Example.show("Thanks for your input! <b>"+comment+"</b>");
+			var name = document.getElementById("name").value;
+			var email = document.getElementById("email").value;
+			var zipCode = document.getElementById("zipCode").value;
 			// var addsite_url = '/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
 			var addsite_url = '/api/comment/'
 		    $.ajax(addsite_url, {
 		      // type: 'GET',
 			  type: 'POST',
-			  data: { lat: markerLAT, lon: markerLON, comment: comment },
+			  data: { lat: markerLAT, lon: markerLON, comment: comment, name: name, email: email, zipcode: zipCode },
 			  success:function(){
 				  console.log("Hooray, it worked!");
+				  Example.show("Thanks for your input! <b>"+comment+"</b>");
+				 window.open("/?lat=" + markerLAT + "&lon=" + markerLON,"_self")
              //map.removeLayer(newMarker)
             },
 			error:function(jqXhr, statusText, error){
@@ -496,7 +594,7 @@ addComment = function(){
 			}
 		    });
 		  }
-		});	
+		});
 	}
 		
 	});

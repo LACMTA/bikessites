@@ -14,7 +14,7 @@ db = Database(app)
 
 # needed for authentication
 auth = Auth(app, db)
-api_auth = UserAuthentication(auth, protected_methods=['DELETE'])
+api_auth = UserAuthentication(auth, protected_methods=['PUT', 'DELETE'])
 
 api = RestAPI(app, default_auth=api_auth)
 admin = Admin(app, auth)
