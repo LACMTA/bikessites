@@ -563,11 +563,7 @@ google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
 
 
 addComment = function(){
-	var msg = "<form id='infos' action=''>\
-    Name:<input type='text' name='name' id='name'></input><br/>\
-    Email:<input type='text' name='email' id='email'></input>\
-	Zip Code:<input type='text' id='zipCode'></input>\
-    </form><br>Enter Your Comment Below:" ;
+	var msg = "<form id='infos' action=''>Name:<input type='text' name='name' id='name'></input><br/>Email:<input type='text' name='email' id='email'></input>Zip Code:<input type='text' id='zipCode'></input></form><br>Enter Your Comment Below:" ;
 		bootbox.prompt(msg, function(result) {                
 		  if (result === null) {   
 		
