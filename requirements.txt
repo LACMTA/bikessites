@@ -13,7 +13,6 @@ itsdangerous==0.24
 latimes-statestyle==0.1.2
 peewee==2.2.5
 pytz==2014.4
-python-tablefu==0.4.2
 simplejson==3.6.0
 six==1.7.3
 wsgiref==0.1.2
