@@ -285,7 +285,7 @@ if (this.value == ''){
 
 
 addLike = function(rID, rLikes){
-	  var addlike_url = "http://127.0.0.1:5000/api/comment/" + rID + "/";
+	  var addlike_url = "/api/comment/" + rID + "/";
 	  var newlikes = rLikes + 1;
 		  $.ajax(addlike_url, {
 	 type: 'POST',
@@ -305,7 +305,7 @@ addLike = function(rID, rLikes){
 
 viewReply = function(rID){
 
-$.getJSON("http://127.0.0.1:5000/api/comment/" + rID + "/", function(data) {
+$.getJSON("/api/comment/" + rID + "/", function(data) {
 	var AllReplies = data.reply.toString();
 document.getElementById("replyComments").innerHTML = AllReplies;
 
@@ -319,7 +319,7 @@ addReply = function(rID){
 			  	if (result != ''){
   			var reply = AllReplies + "<p>" + result + "</p>";
 
-var addreply_url = "http://127.0.0.1:5000/api/comment/" + rID + "/";
+var addreply_url = "/api/comment/" + rID + "/";
 		    $.ajax(addreply_url, {
 		      // type: 'GET',
 			  type: 'POST',
@@ -391,7 +391,7 @@ setMarkers = function(){
 	
   
 //Grab JSON data	
-$.getJSON('http://127.0.0.1:5000/api/comment/', function(data) {
+$.getJSON('/api/comment/', function(data) {
 	//var count = data.length;
 	var commentNumber = 0;
 	//Grab data in Objects
@@ -583,8 +583,8 @@ addComment = function(){
 			var name = document.getElementById("name").value;
 			var email = document.getElementById("email").value;
 			var zipCode = document.getElementById("zipCode").value;
-			// var addsite_url = 'http://127.0.0.1:5000/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
-			var addsite_url = 'http://127.0.0.1:5000/api/comment/'
+			// var addsite_url = '/siteadd/'+markerLAT+'/'+markerLON+'/'+comment;
+			var addsite_url = '/api/comment/'
 		    $.ajax(addsite_url, {
 		      // type: 'GET',
 			  type: 'POST',
