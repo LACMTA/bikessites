@@ -311,10 +311,12 @@ document.getElementById("replyComments").innerHTML = AllReplies;
 
 
 addReply = function(rID){
-	var msg = "Enter Your Reply Below:" ;
+	var msg = "Add a comment about this location:" ;
 		bootbox.prompt(msg, function(result) {                
 		  if (result === null) {   
 		  } else {
+			  
+			  	if (result != ''){
   			var reply = AllReplies + "<p>" + result + "</p>";
 
 var addreply_url = "http://127.0.0.1:5000/api/comment/" + rID + "/";
@@ -330,7 +332,9 @@ var addreply_url = "http://127.0.0.1:5000/api/comment/" + rID + "/";
 			  console.log(statusText, error);
 			}
 		    });
-		  }
+				}
+				else{Example.show("No Comment Added...");
+				  addReply(rID);}}
 		});
 
 };
@@ -408,7 +412,7 @@ $.each(userMarkers, function() {
  new google.maps.Point(16, 37));
 		}
 		else {
-			var image = new google.maps.MarkerImage('http://registry.bedbugs.net/images/blue-dot.png',
+			var image = new google.maps.MarkerImage('http://webeasytest.com/Clipart/Dots/bullet_purple.png',
   new google.maps.Size(16, 16),
   new google.maps.Point(0,0),
   new google.maps.Point(8, 8));
@@ -424,15 +428,21 @@ $.each(userMarkers, function() {
 	map: map,
 	mComment: this.comment,
 	mLikes: this.likes,
-	mID: this.id
+	mID: this.id,
+	mCategory: this.category
 	});
 	
 google.maps.event.addListener(marker, 'click', function() {
 	 var rComment = this.mComment;
 	 var rLikes = this.mLikes;
+	 var rCategory = this.mCategory;
 	 var rID = this.mID;
 	 viewReply(this.mID);
-	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");
+	 
+	if (rCategory == 'userSelected'){
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 else{
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + rComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
 	 stationinfoWindow.open(map,marker);
 	 marker2.setVisible(false);
 	 circle.setVisible(false);
@@ -560,15 +570,16 @@ google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
 
 
 addComment = function(){
-	var msg = "<form id='infos' action=''>\
+	var msg = "<h2>Add This Location</h2><form id='infos' action=''><br>\
     Name:<input type='text' name='name' id='name'></input><br/>\
-    Email:<input type='text' name='email' id='email'></input>\
+    Email:<input type='text' name='email' id='email'></input><br>\
 	Zip Code:<input type='text' id='zipCode'></input>\
     </form><br>Enter Your Comment Below:" ;
 		bootbox.prompt(msg, function(result) {                
 		  if (result === null) {   
 		  } else {
   			var comment = result;
+			if (comment != ''){
 			var name = document.getElementById("name").value;
 			var email = document.getElementById("email").value;
 			var zipCode = document.getElementById("zipCode").value;
@@ -589,6 +600,10 @@ addComment = function(){
 			}
 		    });
 		  }
+		  		  else{Example.show("No Comment Added...");
+				  addComment();}
+		  }
+		  
 		});
 	}
 		
