@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <head>
 	<title>park your bike!</title>
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -88,7 +88,17 @@
     }
 
 	
-	
+	#replyComments p {
+    position:relative;
+	padding: 10px 20px 20px 50px;
+	background-color:#ccc;
+}
+#replyComments p:before {
+    content: url(http://metro.net/interactives/thelab/community/user.png);
+    position:absolute;
+    left:0px; /* adjust it to your custom font needings */
+	top:0px;
+}
 
 	
 	</style>
@@ -98,14 +108,7 @@
 	<body onLoad="load()">
 		<div class="container">
 			<h2>Help Build Bikeshare!</h2>
-            <p>Metro is in the process of developing a regional bikeshare program – and wants to hear from you! 
-
-The program will provide a fleet of bicycles that can be borrowed from strategically placed docking stations. Bicycles can be returned to the same docking station or a separate one, depending on what suits your trip. To help people make easier first and last mile connections, bicycle docking stations must be located near public transit and within accessible distance of other stations. 
-
-This is where you come in – where you think these bikeshare docking station should be located? Which locations would be most convenient and useful for you? The map below shows Metro’s proposed docking station sites with a black bicycle icon – add a comment to tell us if you think a certain location is effective and why. The red pins are suggestions from the public – and also open to your comments. Suggest your own location by clicking an area on the map below. 
-</p>
-
-<span class="info"><strong>WITHIN BOUNDS</strong>: <span id="a" class="bool"></span>
+            <p>Metro is leading a regional effort to develop a user-friendly bikeshare system to facilitate first/last mile connections. The program will provide a fleet of bicycles that can be borrowed from strategically placed bikeshare stations. Metro’s Regional Bikeshare Implementation Plan will specify locations for these bikeshare stations in Phase I of the program. Your input can help Metro identify its Phase I bikeshare station site choices and help propose locations for future phases. <button onclick="moreInfo()">Click here for more info.</button> </p>
 		    <div class="left">
 		       <div id="map" style="width: 100%; height:500px; border: 1px solid; border-color:#999; background-color: #333;"></div>
 		    </div>
@@ -117,24 +120,7 @@ This is where you come in – where you think these bikeshare docking station sh
       <option style="background:#F15623" value="santamonica">Santa Monica</option>
       </optgroup>
 
-    </select>
-<a id="entries"></a> 
-			<table class="table table-condensed">
-			    <thead>
-			        <tr>
-			            <th>Comments</th>
-			        </tr>
-			    </thead>
-			    <tbody>
-
-				        <tr>
-                        <td id="replyComments">
-                        </td>
-				           
-				        </tr>
-		        	
-			    </tbody>
-			</table>					
+    </select>		
 		</div>
 	    <div class="bb-alert alert alert-info" style="display:none;">
 	        <span>The examples populate this alert with dummy content</span>
@@ -144,6 +130,12 @@ This is where you come in – where you think these bikeshare docking station sh
 
 
 <script>
+
+function moreInfo(){
+	
+bootbox.alert("<h2>More Info</h2><p>Metro has proposed a number of initial launch stations (shown in orange). Let us know what you think of these locations by clicking ‘like’ or ‘comment.’</p><p> If you know of a location that would be a great spot for a bikeshare station, pin it on the map below (user suggestions show in purple). If someone has already suggested that location, you can tell us you like it or give more information by leaving a comment.</p><p> Currently, Metro is only seeking input on areas identified for Phase 1: Downtown LA, Pasadena, Santa Monica and Long Beach.</p><p> Final bikeshare station locations will be determined by Metro, City staff and the bikeshare operator. Locations will be determined by availability of space, right-of-way, ADA access and various other factors.  Implementation is currently planned for 2016.</p>", function() {
+});	
+}
 
 //grab variable from URL (Called out by EV Station Page)
 var initLAT = getUrlVars()["lat"];
@@ -158,7 +150,6 @@ function getUrlVars() {
     return vars;
 }
 
-var noteA = jQuery('.bool#a');  
 var centerstart = new google.maps.LatLng(34.056946, -118.244081);
 var markersArray = [];	
 var userMarker = -1;
@@ -307,12 +298,24 @@ viewReply = function(rID){
 
 $.getJSON("/api/comment/" + rID + "/", function(data) {
 	var AllReplies = data.reply.toString();
-document.getElementById("replyComments").innerHTML = AllReplies;
+	
+//document.getElementById("replyComments").innerHTML = AllReplies;
 
 
 addReply = function(rID){
+	setTimeout(function(){
+		
+		var div = document.getElementById('modal-footer');
+		div.innerHTML = div.innerHTML + "<br><div id='replyComments' style='text-align: left; margin-top: -5px;'><h3>Comments:</h3><div id='noComments' >No Comments</div>" +  AllReplies + "</div>";
+			if (AllReplies != ''){
+				document.getElementById('noComments').style.visibility = 'hidden';
+	}else{
+			document.getElementById('noComments').style.visibility = 'visible';	
+	}
+		},500)
+				
 	var msg = "Add a comment about this location:" ;
-		bootbox.prompt(msg, function(result) {                
+		bootbox.prompt(msg, function(result) {             
 		  if (result === null) {   
 		  } else {
 			  
@@ -412,7 +415,7 @@ $.each(userMarkers, function() {
  new google.maps.Point(16, 37));
 		}
 		else {
-			var image = new google.maps.MarkerImage('http://webeasytest.com/Clipart/Dots/bullet_purple.png',
+			var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/bullet_purple.png',
   new google.maps.Size(16, 16),
   new google.maps.Point(0,0),
   new google.maps.Point(8, 8));
@@ -433,16 +436,17 @@ $.each(userMarkers, function() {
 	});
 	
 google.maps.event.addListener(marker, 'click', function() {
-	 var rComment = this.mComment;
+	 var rCommentstrip = this.mComment
+	 var rComment = rCommentstrip.replace(/(<([^>]+)>)/ig,"");;
 	 var rLikes = this.mLikes;
 	 var rCategory = this.mCategory;
 	 var rID = this.mID;
 	 viewReply(this.mID);
 	 
 	if (rCategory == 'userSelected'){
-	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
 	 else{
-	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + rComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " people have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + rComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
 	 stationinfoWindow.open(map,marker);
 	 marker2.setVisible(false);
 	 circle.setVisible(false);
@@ -506,14 +510,12 @@ withinBounds = function(event) {
 	//noteA.text(bounds.contains(myLatLng));	
 	
 	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5 || locationCheck6){
-		noteA.text("TRUE");
 		if (locationCheck){
 		//alert("DOWNTOWN");	
 		}
 		stationinfoWindow.setContent("<center><button onclick='addComment();'>Add a comment at this location.</button><br> You can drag me around too!</center>");
 		}
 		else{
-			noteA.text("FALSE");
 		stationinfoWindow.setContent("Please select an area within the boundaries.");
 		}
 	stationinfoWindow.open(map,marker2);
