@@ -17,7 +17,6 @@
 	<!-- bootbox -->
 	<script src="/static/js/bootbox.js"></script>
 	<script src="/static/data/bounds.js"></script>
-    <script src="/static/data/setlocations.js"></script>
 	<style>
 	
 	
@@ -354,6 +353,9 @@ var addreply_url = "/api/comment/" + rID + "/";
 
 //Initial Setup
 function load() {
+	
+$.ajaxSetup({ cache: false });
+	
 //reset dropdown Options
 document.getElementById('route').selectedIndex = 0;
 //Place Location Selector within Google Maps DIV	
