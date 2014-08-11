@@ -41,7 +41,7 @@
         "<h4 class='modal-title'></h4>" +
       "</div>",
     footer:
-      "<div class='modal-footer'></div>",
+      "<div id='modal-footer' class='modal-footer'></div>",
     closeButton:
       "<button type='button' class='bootbox-close-button close' data-dismiss='modal' aria-hidden='true'>&times;</button>",
     form:
