@@ -344,7 +344,7 @@ if (this.value == ''){
 }}
 
 
-addLike = function(rID, rLikes){
+addLike = function(rID, rLikes, rCatGrab){
 	  var addlike_url = "/api/comment/" + rID + "/";
 	  var newlikes = rLikes + 1;
 		  $.ajax(addlike_url, {
@@ -353,7 +353,12 @@ addLike = function(rID, rLikes){
 
 	 success:function(){
 		 console.log("Like count updated!");
-	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + grabbedComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + newlikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");
+		 
+		 if (rCatGrab == 0){
+		 
+	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + grabbedComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + newlikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	else {	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + grabbedComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + newlikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	
 					  Example.show("You Liked This Location!");
 	     },
 		 error:function(jqXhr, statusText, error){
@@ -489,15 +494,25 @@ $.each(userMarkers, function() {
 	
 //Check to see if comment is approved
 	var mapproved = this.approved;
+	var mcategory = this.category;
 
 	if (mapproved == 1){
 		
 	
- var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/cycling.png',
-new google.maps.Size(32, 37),
-new google.maps.Point(0,0),
-new google.maps.Point(16, 37));
+		if (mcategory == 'metroSelected'){
+  var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/cycling.png',
+  new google.maps.Size(32, 37),
+  new google.maps.Point(0,0),
+ new google.maps.Point(16, 37));
+ zindex = 2;
+		}
+		else {
+			var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/bullet_purple.png',
+  new google.maps.Size(16, 16),
+  new google.maps.Point(0,0),
+  new google.maps.Point(8, 8));
    zindex = 1;
+		}
 	
 	var mlat = this.lat;
 	var mlon = this.lon;
@@ -524,7 +539,12 @@ google.maps.event.addListener(marker, 'click', function() {
 	 var rID = this.mID;
 	 viewReply(this.mID);
 	 
-stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");
+	 if (rCategory == 'userSelected'){
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ", " + 0 + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 else{
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + rComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ", " + 1 + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 
+	 
 
 	 stationinfoWindow.open(map,marker);
 	 marker2.setVisible(false);
