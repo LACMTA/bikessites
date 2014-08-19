@@ -1,0 +1,688 @@
+<!doctype html>
+<head>
+	<title>park your bike!</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<!-- bootstrap -->
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+	<!-- bootbox -->
+	<script src="/static/js/bootbox.js"></script>
+	<script src="/static/data/bounds.js"></script>
+	<style>
+	
+	
+		#map { width: auto; height: 590px; clear: left; }
+		#comments { width: 230px; height: 600px }
+
+		.container {
+			width: 100%;
+			height: auto;
+			overflow: hidden;
+			padding: 0px;
+			margin: 0px;
+		}
+		.left {
+		    float: none; /* not needed, just for clarification */
+		    background: #e8f6fe;
+		    /* the next props are meant to keep this block independent from the other floated one */
+		    width: auto;
+		    overflow: hidden;
+		}​​
+		.bb-code-small {
+		    font-size:0.9em;
+		}
+
+		.bb-alert {
+		    position:fixed;
+		    top:0%;
+            width: 100%;
+		    left:0;
+		    margin-bottom:0;
+		    font-size:1.2em;
+		    padding:1em 1.3em;
+		    z-index:2000;
+		}
+		
+		.bool {
+    font-style: italic;
+    color: #313131;
+}
+
+.testingStyles {font-size: 12px;
+   width: 225px;
+   line-height:50px;
+    font-size: 15px;
+   color:#fff;
+   background: #333333;
+   margin: 10px;
+   border: 2px;
+   padding: 10px;
+   position: absolute;
+   z-index:999;}
+       optgroup[label="Metro Local Service"] {
+        background: #000;
+		color:#FFF;
+           font-style:normal;
+    }
+	
+	       optgroup[label="Metro Express Service"] {
+        background: #005DAA;
+               font-style:normal;
+    }
+
+		       optgroup[label="Metro Limited Stop Service"] {
+                   font-style:normal;
+    }
+	
+		       optgroup[label="Metro Rapid Service"] {
+        background: #D11242;
+                   font-style:normal;
+    }
+
+	
+	#replyComments p {
+    position:relative;
+	padding: 10px 20px 20px 50px;
+	background-color:#ccc;
+}
+#replyComments p:before {
+    content: url(http://metro.net/interactives/thelab/community/user.png);
+    position:absolute;
+    left:0px; /* adjust it to your custom font needings */
+	top:0px;
+}
+
+#mapInsert button
+ {
+
+	border: 1px solid #333333;
+
+	color: white;
+
+	margin: 10px;
+
+	background-color: #663399;
+
+	display: inline-block;
+
+	text-align: center;
+
+	padding: 0 8px;
+
+	line-height: 27px;
+
+	-webkit-border-radius: 2px;
+
+	-moz-border-radius: 2px;
+
+	border-radius: 2px;
+
+	-webkit-transition: all 0.218s;
+
+	-moz-transition: all 0.218s;
+
+	-o-transition: all 0.218s;
+
+	transition: all 0.218s;
+
+	}
+	
+	</style>
+</head>
+
+
+	<body onLoad="load()">
+		<div class="container">
+		            <div id="mapInsert">
+                    <button onclick="settransitlayer()">Toggle Transit Layer</button>
+                    <button onclick="setbikelayer()">Toggle Bike Layer</button>
+                    		</div>
+             <select class="testingStyles" id="route">
+             <option disabled="disabled" selected="selected">Select an Area</option>
+      <option style="background:#ADB8BF" value="downtown">Downtown L.A.</option>
+      <option style="background:#ADB8BF" value="longbeach">Long Beach</option>
+      <option style="background:#ADB8BF" value="pasadena">Pasadena</option>
+      <option style="background:#F15623" value="santamonica">Santa Monica</option>
+      </optgroup>
+
+    </select>		
+    </select>
+            <div class="left">
+		       <div id="map" style="width: 100%; height:500px; border: 1px solid; border-color:#999; background-color: #333;"></div>
+		    </div>
+	    <div class="bb-alert alert alert-info" style="display:none;">
+	        <span>The examples populate this alert with dummy content</span>
+	    </div>
+	</body>
+</html>
+
+
+<script>
+
+//grab variable from URL (Called out by EV Station Page)
+var initLAT = getUrlVars()["lat"];
+var initLON = getUrlVars()["lon"];
+
+//Getting URL Variable
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+    vars[key] = value;
+    });
+    return vars;
+}
+
+var centerstart = new google.maps.LatLng(34.056946, -118.244081);
+var markersArray = [];	
+var userMarker = -1;
+var stationinfoWindow = new google.maps.InfoWindow();
+var grabbedComment;
+
+//Initial Map Setup
+var map = new google.maps.Map(document.getElementById('map'), {
+		  center: centerstart,
+          zoom: 10,
+		  minZoom: 5,
+		  mapTypeId: google.maps.MapTypeId.ROADMAP,
+		  streetViewControl: false,
+		  mapTypeControl: false,
+		  zoomControlOptions: {
+			  style: google.maps.ZoomControlStyle.LARGE
+			  }
+		});
+var bikeLayer = new google.maps.BicyclingLayer();	
+var transitLayer = new google.maps.TransitLayer();	
+var setbLayers = 0;
+var settLayers = 0;
+		
+//Toogle Bike Layer	On/Off
+function setbikelayer(){
+	if (setbLayers == 0){
+transitLayer.setMap(null);
+bikeLayer.setMap(map);
+setbLayers = 1
+settLayers = 0
+	}
+		else {
+transitLayer.setMap(null);
+bikeLayer.setMap(null);
+settLayers = 0
+setbLayers = 0
+	}
+}
+
+//Toogle Transit Layer On/Off
+function settransitlayer(){
+	if (settLayers == 0){
+bikeLayer.setMap(null);
+transitLayer.setMap(map);
+settLayers = 1
+setbLayers = 0
+	}
+	else {
+transitLayer.setMap(null);
+bikeLayer.setMap(null);
+settLayers = 0
+setbLayers = 0
+	}
+}
+
+
+var circle = new google.maps.Circle({
+            map: map,
+            clickable: false,
+            // metres
+            radius: 90,
+            fillColor: '#fff',
+            fillOpacity: .6,
+            strokeColor: '#313131',
+            strokeOpacity: .4,
+            strokeWeight: .8
+ 
+  }), downtownPOLY = new google.maps.Polygon({
+    paths: downtown,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }), pasadenaPOLY = new google.maps.Polygon({
+    paths: pasadena,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }),  santamonicaPOLY = new google.maps.Polygon({
+    paths: santamonica,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }), longbeachPOLY = new google.maps.Polygon({
+    paths: longbeach,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }),universityPOLY = new google.maps.Polygon({
+    paths: university,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  }),longbeachextPOLY = new google.maps.Polygon({
+    paths: longbeachext,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
+
+  });
+
+
+//Location Values
+var myLatLng = new google.maps.LatLng(33.963572, -118.457177);
+var downtownLatLng = new google.maps.LatLng(34.042145, -118.247164);
+var santamonicaLatLng = new google.maps.LatLng(34.027127, -118.479434);
+var pasadenaLatLng = new google.maps.LatLng(34.157202, -118.133697);
+var longbeachLatLng = new google.maps.LatLng(33.774312, -118.193188);
+
+
+//Location Select
+var selectmenu=document.getElementById('route')
+selectmenu.onchange=function(){
+if (this.value == ''){
+	}
+	else{ 
+	if (this.value == 'downtown'){
+	map.panTo(downtownLatLng);
+	map.setZoom(13);
+	}
+	else if (this.value == 'longbeach'){
+	map.panTo(longbeachLatLng);
+	map.setZoom(13);
+	}
+	else if (this.value == 'pasadena'){
+	map.panTo(pasadenaLatLng);
+	map.setZoom(13);
+	}
+	else if (this.value == 'santamonica'){
+	map.panTo(santamonicaLatLng);
+	map.setZoom(13);
+	}
+}}
+
+
+addLike = function(rID, rLikes, rCatGrab){
+	  var addlike_url = "/api/comment/" + rID + "/";
+	  var newlikes = rLikes + 1;
+		  $.ajax(addlike_url, {
+	 type: 'POST',
+	 data: { likes: newlikes },
+
+	 success:function(){
+		 console.log("Like count updated!");
+		 //Determine if userSelected(0) or metroSelected(1)
+		 if (rCatGrab == 0){
+		 
+	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + grabbedComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + newlikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	else {	stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + grabbedComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + newlikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	
+					  Example.show("You Liked This Location!");
+	     },
+		 error:function(jqXhr, statusText, error){
+			  console.log(statusText, error);
+			   Example.show("Server Error: Please try again.");}
+	});
+
+};
+
+
+viewReply = function(rID){
+
+$.getJSON("/api/comment/" + rID + "/", function(data) {
+	var AllReplies = data.reply.toString();
+	
+//document.getElementById("replyComments").innerHTML = AllReplies;
+
+
+addReply = function(rID){
+	setTimeout(function(){
+		
+		var div = document.getElementById('modal-footer');
+		div.innerHTML = div.innerHTML + "<br><div id='replyComments' style='text-align: left; margin-top: -5px;'><h3>Comments:</h3><div id='noComments' >No Comments</div>" +  AllReplies + "</div>";
+			if (AllReplies != ''){
+				document.getElementById('noComments').style.visibility = 'hidden';
+	}else{
+			document.getElementById('noComments').style.visibility = 'visible';	
+	}
+		},500)
+				
+	var msg = "Add a comment about this location:" ;
+		bootbox.prompt(msg, function(result) {             
+		  if (result === null) {   
+		  } else {
+			  
+			  	if (result != ''){
+  			var reply = AllReplies + "<p>" + result + "</p>";
+
+var addreply_url = "/api/comment/" + rID + "/";
+		    $.ajax(addreply_url, {
+		      // type: 'GET',
+			  type: 'POST',
+			  data: { reply: reply },
+			  success:function(){
+				  console.log("Hooray, it worked!");
+				  Example.show("Your Comment Has Been Added!");
+				  stationinfoWindow.close(map,this);
+            },
+			error:function(jqXhr, statusText, error){
+			  console.log(statusText, error);
+			  Example.show("Server Error: Please try again.");
+			}
+		    });
+				}
+				else{Example.show("No Comment Added...");
+				  addReply(rID);}}
+		});
+
+};
+
+
+
+
+});
+
+};
+
+
+
+
+//Initial Setup
+function load() {
+	
+$.ajaxSetup({ cache: false });
+	
+//reset dropdown Options
+document.getElementById('route').selectedIndex = 0;
+//Place Location Selector within Google Maps DIV	
+var homeControlDiv = document.createElement('DIV');
+homeControlDiv = document.getElementById('route');
+homeControlDiv.index = 1;
+map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
+
+var homeControlDiv2 = document.createElement('DIV');
+homeControlDiv2 = document.getElementById('mapInsert');
+homeControlDiv2.index = 1;
+map.controls[google.maps.ControlPosition.TOP_LEFT].push(homeControlDiv2);
+
+//Position back to user selection on map upon refresh
+if (initLAT != null && initLON !=null){
+	var newCenter = new google.maps.LatLng(initLAT, initLON);
+	map.panTo(newCenter);
+	map.setZoom(16);
+}
+
+
+//Set Boundary Locations
+downtownPOLY.setMap(map);
+pasadenaPOLY.setMap(map);
+santamonicaPOLY.setMap(map);
+longbeachPOLY.setMap(map);
+longbeachextPOLY.setMap(map);
+universityPOLY.setMap(map);
+
+setMarkers();
+	}
+	
+
+setMarkers = function(){
+	
+	
+	
+	
+  
+//Grab JSON data	
+$.getJSON('/api/comment/', function(data) {
+	
+// Browser Compatability Solution	
+if (!Object.keys) Object.keys = function(o) {
+  if (o !== Object(o))
+    throw new TypeError('Object.keys called on a non-object');
+  var k=[],p;
+  for (p in o) if (Object.prototype.hasOwnProperty.call(o,p)) k.push(p);
+  return k;
+}
+
+	//var count = data.length;
+	var commentNumber = 0;
+	//Grab data in Objects
+	var userMarkers = data[Object.keys(data)[1]]
+	
+	
+//Set Markers
+$.each(userMarkers, function() {
+	
+//Check to see if comment is approved
+	var mapproved = this.approved;
+	var mcategory = this.category;
+
+	if (mapproved == 1){
+		
+		if (mcategory == 'metroSelected'){
+			var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/cycling.png',
+			new google.maps.Size(32, 37),
+			new google.maps.Point(0,0),
+			new google.maps.Point(16, 37));
+			zindex = 2;
+		}
+		
+		else {
+			var image = new google.maps.MarkerImage('http://metro.net/interactives/thelab/community/bullet_purple.png',
+			new google.maps.Size(16, 16),
+			new google.maps.Point(0,0),
+			new google.maps.Point(8, 8));
+			zindex = 1;
+		}
+		
+		var mlat = this.lat;
+		var mlon = this.lon;
+		var myLatLng = new google.maps.LatLng(mlat, mlon);
+		var marker = new google.maps.Marker({
+			position: myLatLng,
+			clickable: true,
+			zIndex:888,
+			icon: image,
+			map: map,
+			zIndex: zindex,
+			mComment: this.comment,
+			mLikes: this.likes,
+			mID: this.id,
+			mCategory: this.category
+		});
+	
+google.maps.event.addListener(marker, 'click', function() {
+	 var rCommentstrip = this.mComment
+	 var rComment = rCommentstrip.replace(/(<([^>]+)>)/ig,"");
+	 window.grabbedComment = rComment;
+	 var rLikes = this.mLikes;
+	 var rCategory = this.mCategory;
+	 var rID = this.mID;
+	 viewReply(this.mID);
+	 
+	 if (rCategory == 'userSelected'){
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/comment_icon.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>User Comment</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>" + rComment + "</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ", " + 0 + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 else{
+	 stationinfoWindow.setContent("<table width='450' border='0'><tr><td colspan='2' style='padding:5px 5px 5px 10px;' bgcolor='#000000'><div style='display:table;'><div style='display: table-cell; vertical-align: middle;'><img src='http://metro.net/interactives/thelab/community/cycling_cube.png' /></div><div style='display: table-cell; color:#fff; font-size:30px; vertical-align: middle; padding-left: 18px;'>" + rComment + "</div></div></td></tr><tr><td colspan='2' style='padding:5px;'><b>Comment: </b>This location has been proposed by the agency for a bikeshare station installation.</td></tr><tr><td style='padding:5px;' align='left'><font color='#128fde'><b>" + rLikes + " user(s) have liked this location.</b></font></td><td style='padding:5px;' align='right'><a id='myLink' href='#' onclick='addLike("+ rID +", " + rLikes + ", " + 1 + ");return false;'><img style='padding-right: 5px;' src='http://metro.net/interactives/thelab/community/like.png' /></a><a id='myLink' href='#' onclick='addReply("+ rID +");return false;'><img src='http://metro.net/interactives/thelab/community/comment.png' /></a></td></tr></table>");}
+	 
+	 
+
+	 stationinfoWindow.open(map,marker);
+	 marker2.setVisible(false);
+	 circle.setVisible(false);
+  });
+	}});	
+});
+
+
+};
+
+
+withinBounds = function(event) {
+	var locationCheck = google.maps.geometry.poly.containsLocation(event.latLng, downtownPOLY);
+	var locationCheck2 = google.maps.geometry.poly.containsLocation(event.latLng, santamonicaPOLY);
+	var locationCheck3 = google.maps.geometry.poly.containsLocation(event.latLng, pasadenaPOLY);
+	var locationCheck4 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachPOLY);
+	var locationCheck5 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachextPOLY);
+	var locationCheck6 = google.maps.geometry.poly.containsLocation(event.latLng, universityPOLY);
+	
+	circle.bindTo('center', marker2, 'position');
+	var bounds = circle.getBounds();
+	//noteA.text(bounds.contains(myLatLng));	
+	
+	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5 || locationCheck6){
+		if (locationCheck){
+		//alert("DOWNTOWN");	
+		}
+		stationinfoWindow.setContent("<center><button onclick='addComment();'>Add a comment at this location.</button><br> You can drag me around too!</center>");
+		}
+		else{
+		stationinfoWindow.setContent("<div style='height: 60px;'><center><b>Please select an area within the boundaries.</b><br> You can drag me around too!</center></div>");
+		}
+	stationinfoWindow.open(map,marker2);
+	circle.setVisible(true);
+}
+
+
+//On Map Click
+google.maps.event.addListener(map, "click", function(event) {
+	
+	 //Reset Captured Coordinates
+	 markerLAT = event.latLng.lat();
+	 markerLON = event.latLng.lng();
+	 var stationSelect = new google.maps.LatLng(markerLAT, markerLON); 
+	 
+	 //Center Map to Selected Location
+	 map.panTo(stationSelect);	
+
+	//If Marker Exists
+	if ( userMarker > 0 ) {
+		marker2.setVisible(true);
+		marker2.setPosition(stationSelect);
+	}
+	
+	//If Marker Does not Exist
+	else {
+		userMarker = 1;
+		marker2 = new google.maps.Marker({
+			map: map,
+			clickable: false,
+			draggable: true,
+			position: stationSelect
+		});
+	}
+			
+	//Check to see if user selection is within set bounds
+	withinBounds(event);
+
+google.maps.event.addListener(marker2,'dragend',function(event) {
+	stationinfoWindow.open(map,this);
+	markerLAT = event.latLng.lat();
+	markerLON = event.latLng.lng();
+	withinBounds(event);
+    });
+	
+google.maps.event.addListener(marker2,'dragstart',function(event) {
+	stationinfoWindow.close(map,this);
+    });
+	
+google.maps.event.addListener(stationinfoWindow,'closeclick',function(){
+	circle.setVisible(false);
+	marker2.setVisible(false);
+	userMarker = -1;
+	});
+	
+	
+
+
+addComment = function(){
+
+	var msg = "<h2>Add This Location</h2><form id='infos' action=''><br>\
+    Name:<input type='text' name='name' id='name'></input><br/>\
+    Email:<input type='text' name='email' id='email'></input><br>\
+	Zip Code:<input type='text' id='zipCode'></input>\
+    </form><br>Enter Your Comment Below:" ;
+	
+	bootbox.prompt(msg, function(result) {
+		  if (result === null) {   
+		  }
+		  	else {
+				var comment = result;
+				if (comment != ''){
+				var name = document.getElementById("name").value;
+				var email = document.getElementById("email").value;
+				var zipCode = document.getElementById("zipCode").value;
+				var addsite_url = '/api/comment/'
+					$.ajax(addsite_url, {
+						type: 'POST',
+						data: { lat: markerLAT, lon: markerLON, comment: comment, name: name, email: email, zipcode: zipCode },
+							success:function(){
+								console.log("Hooray, it worked!");
+								Example.show("Thanks for your input! <b>"+comment+"</b>");
+								window.open("/?lat=" + markerLAT + "&lon=" + markerLON,"_self")
+							},
+			error:function(jqXhr, statusText, error){
+			  console.log(statusText, error);
+			  Example.show("Server Error: Please try again.");
+			}
+		    });
+		  }
+		  		  else{Example.show("No Comment Added...");
+				  addComment();}
+		  }
+		  
+		});
+	}
+		
+	});
+</script>
+
+<script src="/static/js/example.js"></script>
+    <script>
+        $(function() {
+            Example.init({
+                "selector": ".bb-alert"
+            });
+        });
+    </script>
