@@ -3,17 +3,16 @@ import datetime, time
 from flask_peewee.auth import BaseUser
 from flask_peewee.rest import RestResource, UserAuthentication
 from peewee import FloatField,DateTimeField,TextField,BooleanField,IntegerField,CharField
+import gspread
+import random
 
 from bikessites import db, admin, api, api_auth
+from config import Configuration
 
-def microtime():
-    millis = int(round(time.time() * 1000))
-    return millis
 
 class Comment(db.Model):
     d = datetime.datetime.now()
-    stamp = int( microtime() )
-    uid = IntegerField(default=stamp)
+    uid = IntegerField(default=0)
     lat = FloatField(default=0.0)
     lon = FloatField(default=0.0)
     comment = TextField(default='Hi')
@@ -25,9 +24,33 @@ class Comment(db.Model):
     approved = BooleanField(default=True)
     likes = IntegerField(default=0)
     category=CharField(default='userSelected',max_length=16)
-
+    
     def __unicode__(self):
         return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
+        
+    def _save_gdocs(self):
+        gc = gspread.login(Configuration.GDOCS_USER,Configuration.GDOCS_PASS)
+        wks = gc.open("bikeshare").sheet1
+        objl = [self.uid,
+            self.lat,
+            self.lon,
+            self.comment,
+            self.reply,
+            self.likes,
+            self.name,
+            self.email,
+            self.zipcode,
+            self.category]
+        try:
+            wks.append_row(objl)
+        except:
+            print "Google Docs unreachable"
+        
+    def save(self, *args, **kwargs):
+        stamp = int( random.randrange(111111111111,999999999999) )
+        self.uid = stamp
+        self._save_gdocs()
+        return super(Comment, self).save(*args, **kwargs)
 
     # def __repr__(self):
     #     return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
