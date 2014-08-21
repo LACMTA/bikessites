@@ -1,5 +1,6 @@
 import datetime, time
 
+from flask import Markup
 from flask_peewee.auth import BaseUser
 from flask_peewee.rest import RestResource, UserAuthentication
 from peewee import FloatField,DateTimeField,TextField,BooleanField,IntegerField,CharField
@@ -31,11 +32,10 @@ class Comment(db.Model):
     def _save_gdocs(self):
         gc = gspread.login(Configuration.GDOCS_USER,Configuration.GDOCS_PASS)
         wks = gc.open("bikeshare").sheet1
-        objl = [self.uid,
-            self.lat,
+        objl = [self.lat,
             self.lon,
             self.comment,
-            self.reply,
+            Markup(self.reply).striptags(),
             self.likes,
             self.name,
             self.email,
