@@ -40,7 +40,9 @@ class Comment(db.Model):
             self.name,
             self.email,
             self.zipcode,
-            self.category]
+            self.category,
+            self.pub_date,
+            ]
         try:
             wks.append_row(objl)
         except:
