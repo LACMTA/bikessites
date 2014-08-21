@@ -20,7 +20,6 @@
 	<style>
 	
 	
-		#map {clear: left; }
 		#comments { width: 230px; height: 600px }
 
 		.container {
@@ -31,11 +30,13 @@
 			margin: 0px;
 		}
 		.left {
-		    float: none; /* not needed, just for clarification */
-		    background: #e8f6fe;
-		    /* the next props are meant to keep this block independent from the other floated one */
-		    width: auto;
-		    overflow: hidden;
+			float: none; /* not needed, just for clarification */
+			background: #e8f6fe;
+			/* the next props are meant to keep this block independent from the other floated one */
+			width: 100%;
+			overflow: hidden;
+			position: fixed;
+			height: 100%;
 		}​​
 		.bb-code-small {
 		    font-size:0.9em;
@@ -157,7 +158,7 @@
     </select>		
     </select>
             <div class="left">
-		       <div id="map" style="width: 100%; border: 1px solid rgb(153, 153, 153); background-color: rgb(51, 51, 51); position: fixed; overflow: hidden; height: 100%;"></div>
+		         <div id="map" style="width: 100%; height:100%; border: 1px solid; border-color:#999; background-color: #333;"></div>
 		    </div>
 	    <div class="bb-alert alert alert-info" style="display:none;">
 	        <span>The examples populate this alert with dummy content</span>

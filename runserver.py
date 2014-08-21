@@ -29,11 +29,13 @@ def flushDB():
             lat=bs['lat'],
             lon=bs['lon'],
             comment=bs['comment'],
+            reply=bs['reply'],
             approved=bs['approved'],
             name=bs['name'],
             email=bs['email'],
             zipcode=bs['zipcode'],
-            category='metroSelected',
+            likes=bs['likes'],
+            category=bs['category'],
             )
 
 

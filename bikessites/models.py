@@ -6,9 +6,13 @@ from peewee import FloatField,DateTimeField,TextField,BooleanField,IntegerField,
 
 from bikessites import db, admin, api, api_auth
 
+def microtime():
+    millis = int(round(time.time() * 1000))
+    return millis
+
 class Comment(db.Model):
     d = datetime.datetime.now()
-    stamp = int( (int(time.mktime(d.timetuple())) *1000) +(d.microsecond/100))
+    stamp = int( microtime() )
     uid = IntegerField(default=stamp)
     lat = FloatField(default=0.0)
     lon = FloatField(default=0.0)
@@ -35,7 +39,7 @@ admin.setup()
 
 # Exclude the uid from the resource listing
 class CommentResource(RestResource):
-    paginate_by=2000
+    paginate_by=500
 #     exclude = ('uid')
 
 # register our models so they are exposed via /api/<model>/
