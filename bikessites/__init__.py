@@ -1,6 +1,4 @@
 from flask import Flask
-# flask-rq
-from flask.ext.rq import RQ
 # flask-bootstrap
 from flask_bootstrap import Bootstrap
 # flask-peewee
@@ -11,7 +9,6 @@ from flask_peewee.admin import Admin
 
 app = Flask(__name__)
 Bootstrap(app)
-RQ(app)
 app.config.from_object('config.Configuration')
 db = Database(app)
 
