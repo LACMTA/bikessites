@@ -33,14 +33,11 @@ class Comment(db.Model):
     def __unicode__(self):
         return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
     
-    def save(self, *args, **kwargs):
-        print "{{{{{{{{{{{{{{{ SAVE }}}}}}}}}}}}}}}"
-        stamp = int( random.randrange(111111111111,999999999999) )
-        self.uid = stamp
-        job = q.enqueue( _save_gdocs(self) )
-        print job.result
-        print "{{{{{{{{{{{{{{{ Q'ED }}}}}}}}}}}}}}}"
-        return super(Comment, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     stamp = int( random.randrange(111111111111,999999999999) )
+    #     self.uid = stamp
+    #     job = q.enqueue( _save_gdocs(self) )
+    #     return super(Comment, self).save(*args, **kwargs)
 
     # def __repr__(self):
     #     return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
