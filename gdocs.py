@@ -1,10 +1,14 @@
 import gspread
+from flask.ext.rq import job
 from config import Configuration
 
-gc = gspread.login(Configuration.GDOCS_USER,Configuration.GDOCS_PASS)
 
+@job
 def _save_gdocs(obj):
+    gc = gspread.login(Configuration.GDOCS_USER,Configuration.GDOCS_PASS)
     wks = gc.open("bikeshare").sheet1
+    print "{{{{{{{{{{{ _save_gdocs }}}}}}}}}}}"
+    print obj
     objl = [obj.lat,
         obj.lon,
         obj.comment,
@@ -19,3 +23,8 @@ def _save_gdocs(obj):
     wks.append_row(objl)
     
 
+import requests
+
+def count_words_at_url(url):
+    resp = requests.get(url)
+    return len(resp.text.split())

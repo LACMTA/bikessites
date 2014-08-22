@@ -1,6 +1,8 @@
 from flask import Flask
+# flask-rq
+from flask.ext.rq import RQ
 # flask-bootstrap
-from flask_bootstrap import Bootstrap
+# from flask_bootstrap import Bootstrap
 # flask-peewee
 from flask_peewee.auth import Auth
 from flask_peewee.rest import RestAPI, UserAuthentication
@@ -8,7 +10,8 @@ from flask_peewee.db import Database
 from flask_peewee.admin import Admin
 
 app = Flask(__name__)
-Bootstrap(app)
+# Bootstrap(app)
+RQ(app)
 app.config.from_object('config.Configuration')
 db = Database(app)
 
