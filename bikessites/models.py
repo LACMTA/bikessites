@@ -6,9 +6,15 @@ from flask_peewee.rest import RestResource, UserAuthentication
 from peewee import FloatField,DateTimeField,TextField,BooleanField,IntegerField,CharField
 import gspread
 import random
+from redis import Redis
+from rq import Queue
 
 from bikessites import db, admin, api, api_auth
 from config import Configuration
+
+# Tell RQ what Redis connection to use
+redis_conn = Redis()
+q = Queue(connection=redis_conn)  # no args implies the default queue
 
 
 class Comment(db.Model):
@@ -28,14 +34,14 @@ class Comment(db.Model):
     
     def __unicode__(self):
         return '[%f,%f,%s]' % (self.lat, self.lon, self.comment)
-        
+    
     def _save_gdocs(self):
         gc = gspread.login(Configuration.GDOCS_USER,Configuration.GDOCS_PASS)
         wks = gc.open("bikeshare").sheet1
         objl = [self.lat,
             self.lon,
             self.comment,
-            Markup(self.reply).striptags(),
+            self.reply,
             self.likes,
             self.name,
             self.email,
@@ -44,9 +50,9 @@ class Comment(db.Model):
             self.pub_date,
             ]
         try:
-            wks.append_row(objl)
+            q.enqueue( wks.append_row(objl) )
         except:
-            print "Google Docs unreachable"
+            return "Google Docs unreachable"
         
     def save(self, *args, **kwargs):
         stamp = int( random.randrange(111111111111,999999999999) )
