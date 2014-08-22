@@ -19,6 +19,10 @@ class Configuration(object):
     DEBUG = True
     #add this so that flask doesn't swallow error messages
     PROPAGATE_EXCEPTIONS = DEBUG
+    RQ_DEFAULT_HOST = '127.0.0.1'
+    RQ_DEFAULT_PORT = 6379
+    RQ_DEFAULT_DB = 1
+    # RQ_DEFAULT_PASSWORD = ''
     GDOCS_USER = 'dgoodwin'
     GDOCS_PASS = 'awrwcfZeXPg8'
     # CORS
