@@ -16,7 +16,7 @@ class Configuration(object):
     # }
     SECRET_KEY = 'm3tr0'
     DATAFILE = 'data.csv'
-    DEBUG = False
+    DEBUG = True
     #add this so that flask doesn't swallow error messages
     PROPAGATE_EXCEPTIONS = DEBUG
     GDOCS_USER = 'dgoodwin'
