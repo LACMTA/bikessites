@@ -144,15 +144,15 @@
 	<body onLoad="load()">
 		<div class="container">
 		            <div id="mapInsert">
-                    <button onclick="settransitlayer()">Toggle Transit Layer</button>
-                    <button onclick="setbikelayer()">Toggle Bike Layer</button>
+                    <button onClick="settransitlayer()">Toggle Transit Layer</button>
+                    <button onClick="setbikelayer()">Toggle Bike Layer</button>
                     		</div>
              <select class="testingStyles" id="route">
              <option disabled="disabled" selected="selected">Select an Area</option>
       <option style="background:#ADB8BF" value="downtown">Downtown L.A.</option>
       <option style="background:#ADB8BF" value="longbeach">Long Beach</option>
       <option style="background:#ADB8BF" value="pasadena">Pasadena</option>
-      <option style="background:#F15623" value="santamonica">Santa Monica</option>
+      <option style="background:#ADB8BF" value="santamonica">Santa Monica/Venice</option>
       </optgroup>
 
     </select>		
@@ -308,6 +308,16 @@ var circle = new google.maps.Circle({
 	fillColor: '#CC6600',
 	fillOpacity: 0.3,
 	zIndex: 50 
+	
+ }),venicePOLY = new google.maps.Polygon({
+    paths: venice,
+	clickable: false,
+	strokeColor: '#000',
+	strokeOpacity: 0.2,
+	strokeWeight: 1,
+	fillColor: '#CC6600',
+	fillOpacity: 0.3,
+	zIndex: 50 
 
   });
 
@@ -315,7 +325,7 @@ var circle = new google.maps.Circle({
 //Location Values
 var myLatLng = new google.maps.LatLng(33.963572, -118.457177);
 var downtownLatLng = new google.maps.LatLng(34.042145, -118.247164);
-var santamonicaLatLng = new google.maps.LatLng(34.027127, -118.479434);
+var santamonicaLatLng = new google.maps.LatLng(34.00653027965627, -118.46922397613525);
 var pasadenaLatLng = new google.maps.LatLng(34.157202, -118.133697);
 var longbeachLatLng = new google.maps.LatLng(33.774312, -118.193188);
 
@@ -461,6 +471,7 @@ santamonicaPOLY.setMap(map);
 longbeachPOLY.setMap(map);
 longbeachextPOLY.setMap(map);
 universityPOLY.setMap(map);
+venicePOLY.setMap(map);
 
 setMarkers();
 	}
@@ -565,15 +576,13 @@ withinBounds = function(event) {
 	var locationCheck4 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachPOLY);
 	var locationCheck5 = google.maps.geometry.poly.containsLocation(event.latLng, longbeachextPOLY);
 	var locationCheck6 = google.maps.geometry.poly.containsLocation(event.latLng, universityPOLY);
+	var locationCheck7 = google.maps.geometry.poly.containsLocation(event.latLng, venicePOLY);
 	
 	circle.bindTo('center', marker2, 'position');
 	var bounds = circle.getBounds();
 	//noteA.text(bounds.contains(myLatLng));	
 	
-	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5 || locationCheck6){
-		if (locationCheck){
-		//alert("DOWNTOWN");	
-		}
+	if (locationCheck || locationCheck2 || locationCheck3 || locationCheck4 || locationCheck5 || locationCheck6 || locationCheck7){
 		stationinfoWindow.setContent("<center><button onclick='addComment();'>Add a comment at this location.</button><br> You can drag me around too!</center>");
 		}
 		else{
