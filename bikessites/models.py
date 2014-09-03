@@ -25,7 +25,7 @@ class Comment(db.Model):
     email = CharField(default='anonymous@gmail.com',max_length=255)
     zipcode = CharField(default='90000',max_length=10)
     reply = TextField(default='')
-    pub_date = DateTimeField(default=datetime.datetime.now)
+    pub_date = DateTimeField(default=d)
     approved = BooleanField(default=True)
     likes = IntegerField(default=0)
     category=CharField(default='userSelected',max_length=16)
