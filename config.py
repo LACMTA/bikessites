@@ -24,7 +24,7 @@ class Configuration(object):
     RQ_DEFAULT_DB = 1
     # RQ_DEFAULT_PASSWORD = ''
     GDOCS_USER = 'dgoodwin'
-    GDOCS_PASS = 'awrwcfZeXPg8'
+    GDOCS_PASS = '6411Lomitas'
     # CORS
     CORS_ORIGINS = ['http://localhost', 'http://127.0.0.1', 'http://metro.net']
     CORS_HEADERS = ['Content-Type']
