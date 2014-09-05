@@ -49,7 +49,7 @@ admin.setup()
 
 # Exclude the uid from the resource listing
 class CommentResource(RestResource):
-    paginate_by=500
+    paginate_by=1000
 #     exclude = ('uid')
 
 # register our models so they are exposed via /api/<model>/
