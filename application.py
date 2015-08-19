@@ -1,20 +1,20 @@
 from os import rename
 import shutil
-from bikessites import app, auth
+from bikessites import app as application, auth
 from bikessites.models import Comment
 
 def flushDB():
-    bikeStations = app.config['BIKESTATIONS']
+    bikeStations = application.config['BIKESTATIONS']
 
     # let's get rid of the old data.db file
-    dbfile = app.config['DBFILE']
+    dbfile = application.config['DBFILE']
     delme='%s_' %(dbfile)
     try:
         shutil.move(dbfile,delme)
     except:
         # no data.db file here!
         pass
-    
+
     # set up the admin user
     auth.User.create_table(fail_silently=True)
     admin = auth.User(username='admin', email='', admin=True, active=True)
@@ -40,8 +40,7 @@ def flushDB():
 
 
 if __name__ == "__main__":
-    if app.config['DEBUG']:
+    if application.config['DEBUG']:
         flushDB()
 
-    app.run()
-
+    application.run()
