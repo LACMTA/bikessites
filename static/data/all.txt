@@ -1,0 +1,128 @@
+-118.458798329;34.0475054318	;	Los Angeles	;	Santa Monica
+-118.467392684;34.0443615591	;	Los Angeles	;	Santa Monica
+-118.472728523;34.0397420474	;	Santa Monica	;	Santa Monica
+-118.488315411;34.0379216728	;	Santa Monica	;	Santa Monica
+-118.49413546;34.0330287357	;	Santa Monica	;	Santa Monica
+-118.498175956;34.0294954449	;	Santa Monica	;	Santa Monica
+-118.490209548;34.028445998	;	Santa Monica (other)	;	Santa Monica
+-118.480816291;34.0334882847	;	Santa Monica	;	Santa Monica
+-118.481450561;34.0307806161	;	Santa Monica	;	Santa Monica
+-118.486136554;34.0264336118	;	Santa Monica (other)	;	Santa Monica
+-118.493104132;34.0234296975	;	Santa Monica	;	Santa Monica
+-118.496981776;34.019897112	;	Santa Monica	;	Santa Monica
+-118.497292978;34.0175964601	;	Santa Monica (other)	;	Santa Monica
+-118.491943211;34.0193767224	;	Santa Monica	;	Santa Monica
+-118.488060647;34.0220976237	;	Santa Monica	;	Santa Monica
+-118.482226196;34.0244204397	;	Santa Monica	;	Santa Monica
+-118.473962402;34.0281051058	;	Santa Monica	;	Santa Monica
+-118.472361589;34.0323043463	;	Santa Monica	;	Santa Monica
+-118.466833558;34.0315143061	;	Santa Monica	;	Santa Monica
+-118.489500422;34.0183045974	;	Santa Monica (other)	;	Santa Monica
+-118.485116415;34.0185928095	;	Santa Monica	;	Santa Monica
+-118.494188493;34.0144982989	;	Santa Monica (other)	;	Santa Monica
+-118.49174979;34.0141024872	;	Metro Expo	;	Santa Monica
+-118.479463156;34.0241609321	;	Metro Expo	;	Santa Monica
+-118.472605535;34.0179661547	;	Santa Monica	;	Santa Monica
+-118.470660961;34.0187852939	;	Santa Monica	;	Santa Monica
+-118.46885908;34.0160871689	;	Santa Monica	;	Santa Monica
+-118.489114705;34.0078913743	;	Santa Monica	;	Santa Monica
+-118.485519753;34.0041186964	;	Santa Monica	;	Santa Monica
+-118.476209024;33.9946878194	;	Los Angeles	;	Santa Monica
+-118.469048259;33.991875474	;	Los Angeles	;	Santa Monica
+-118.470977768;33.9884865429	;	Los Angeles	;	Santa Monica
+-118.469667841;34.0283466922	;	Metro Expo	;	Santa Monica
+-118.482404159;34.0013185217	;	Santa Monica (other)	;	Santa Monica
+-118.479382697;33.99882598	;	Santa Monica (other)	;	Santa Monica
+-118.24738;34.058322	;	Placemark	;	Downtown
+-118.251077874;34.05874703	;	Placemark	;	Downtown
+-118.238867098;34.057059884	;	Placemark	;	Downtown
+-118.237097933;34.056227433	;	Placemark	;	Downtown
+-118.23801;34.05148	;	Placemark	;	Downtown
+-118.2423;34.053967	;	Placemark	;	Downtown
+-118.244469229;34.052943792	;	Placemark	;	Downtown
+-118.248772888;34.055706888	;	Placemark	;	Downtown
+-118.24512;34.056159	;	Placemark	;	Downtown
+-118.246632899;34.05432189	;	Placemark	;	Downtown
+-118.249771785;34.05099353	;	Placemark	;	Downtown
+-118.251784524;34.048776547	;	Placemark	;	Downtown
+-118.25499;34.050892	;	Placemark	;	Downtown
+-118.258755882;34.048696522	;	Placemark	;	Downtown
+-118.259320066;34.044404157	;	Placemark	;	Downtown
+-118.264927067;34.043995074	;	Placemark	;	Downtown
+-118.268557916;34.039967097	;	Placemark	;	Downtown
+-118.26047;34.038845	;	Placemark	;	Downtown
+-118.268334591;34.03272467	;	Placemark	;	Downtown
+-118.25648;34.027132	;	Placemark	;	Downtown
+-118.286403;34.018228	;	Placemark	;	Downtown
+-118.280094357;34.021946164	;	Placemark	;	Downtown
+-118.26655;34.039335	;	Placemark	;	Downtown
+-118.235067129;34.041796257	;	5th / Hewitt	;	Downtown
+-118.236487359;34.04572787	;	3rd / Traction	;	Downtown
+-118.232588768;34.045983452	;	3rd / Santa Fe	;	Downtown
+-118.232427835;34.035768467	;	Industrial / Mateo	;	Downtown
+-118.239133358;34.049290389	;	1st / Central	;	Downtown
+-118.256573081;34.047268017	;	7th / Grand	;	Downtown
+-118.2531479;34.056556087	;	2nd / Figueroa	;	Downtown
+-118.247791529;34.053139431	;	2nd / Hill	;	Downtown
+-118.246235847;34.062685722	;	Cesar E Chavez / Figueroa	;	Downtown
+-118.24693054;34.050250444	;	3rd / Spring	;	Downtown
+-118.247212172;34.048132531	;	4th / Main	;	Downtown
+-118.244513869;34.05100159	;	2nd / Main	;	Downtown
+-118.249623477;34.047376915	;	5th / Spring	;	Downtown
+-118.249937296;34.045283378	;	6th / Main	;	Downtown
+-118.252284229;34.044534403	;	7th / Spring	;	Downtown
+-118.254427314;34.045930113	;	7th / Hill	;	Downtown
+-118.256363869;34.049463733	;	6th / Hope	;	Downtown
+-118.264195919;34.050841583	;	7th / Bixel	;	Downtown
+-118.255022764;34.041640678	;	9th / Main	;	Downtown
+-118.25686276;34.045147807	;	8th / Olive	;	Downtown
+-118.261942863;34.04153844	;	11th / Grand	;	Downtown
+-118.262200356;34.039404752	;	12th / Olive	;	Downtown
+-118.261214644;34.047986964	;	8th / Figueroa	;	Downtown
+-118.262736797;34.046312373	;	9th / Figueroa	;	Downtown
+-118.266899586;34.04190294	;	12th / Figueroa	;	Downtown
+-118.258468062;34.061570266	;	1st / Toluca	;	Downtown
+-118.250420094;34.043254242	;	7th / Los Angeles	;	Downtown
+-118.265456557;34.037226556	;	14th / Grand	;	Downtown
+-118.271427155;34.035430614	;	18th / Figueroa	;	Downtown
+-118.273009658;34.030144811	;	23rd / Flower	;	Downtown
+-118.23279798;34.039178044	;	Willow / Mateo	;	Downtown
+-118.230088949;34.034537074	;	7th / Santa Fe	;	Downtown
+-118.276716471;34.027117218	;	27th / Figueroa	;	Downtown
+-118.283829689;34.022662326	;	34th / Trousdale	;	Downtown
+-118.285160065;34.020350313	;	36th / Trousdale	;	Downtown
+-118.152995;34.133261	;	Placemark	;	Pasadena
+-118.152995;34.133261	;	Pilot	;	Pasadena
+-118.14361;34.145179	;	Pilot	;	Pasadena
+-118.145963;34.144523	;	Pilot	;	Pasadena
+-118.14142;34.144558	;	Pilot	;	Pasadena
+-118.146;34.145821	;	Pilot	;	Pasadena
+-118.14429;34.147649	;	Pilot	;	Pasadena
+-118.14427;34.149991	;	Pilot	;	Pasadena
+-118.14526;34.14981	;	Pilot	;	Pasadena
+-118.14294;34.154774	;	II	;	Pasadena
+-118.16106;34.149565	;	II	;	Pasadena
+-118.152136;34.152845	;	II	;	Pasadena
+-118.16619;34.158795	;	II	;	Pasadena
+-118.13984;34.148306	;	I	;	Pasadena
+-118.13232;34.140692	;	Pilot	;	Pasadena
+-118.13227;34.135879	;	Pilot	;	Pasadena
+-118.12801;34.140959	;	Pilot	;	Pasadena
+-118.12795;34.13592	;	Pilot	;	Pasadena
+-118.12072;34.14245	;	I	;	Pasadena
+-118.11624;34.145496	;	I	;	Pasadena
+-118.132365;34.145905	;	Pilot	;	Pasadena
+-118.13796;34.146218	;	Pilot	;	Pasadena
+-118.13233;34.14256	;	Pilot	;	Pasadena
+-118.15048;34.145778	;	Pilot	;	Pasadena
+-118.14812;34.133539	;	Pilot	;	Pasadena
+-118.1477;34.148067	;	Pilot	;	Pasadena
+-118.13195;34.151815	;	I	;	Pasadena
+-118.11416;34.152417	;	I	;	Pasadena
+-118.14827;34.148592	;	Pilot	;	Pasadena
+-118.14967;34.142019	;	Pilot	;	Pasadena
+-118.14821;34.141343	;	Pilot	;	Pasadena
+-118.12136;34.145972	;	I	;	Pasadena
+-118.15415;34.145757	;	Pilot	;	Pasadena
+-118.14949;34.12927	;	Pilot	;	Pasadena
+-118.15234;34.142412	;	Pilot	;	Pasadena
