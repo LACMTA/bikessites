@@ -34,3 +34,7 @@ coverage.xml
 docs/_build/
 data.db
 data.db__
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
